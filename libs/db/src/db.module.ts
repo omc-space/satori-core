@@ -13,7 +13,6 @@ export type ClassType = { new (...args): any }
 })
 export class DbModule {
   static forRoot(uri?: string, options = {}): DynamicModule {
-    console.log(MONGO_DB.uri)
     const providers: Provider[] = [
       {
         provide: DB_CONNECTION_TOKEN,
