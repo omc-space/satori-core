@@ -7,12 +7,15 @@ import {
 import { generateDocument } from './utils/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import { isDev } from './app.config'
+import loggerUtil from './utils/logger.util'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
+    { logger: loggerUtil },
   )
+
   generateDocument(app)
   app.useGlobalPipes(
     new ValidationPipe({

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Logger, MiddlewareConsumer, Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { UserModule } from '~/modules/user/user.module'
 import { ConfigModule } from '@nestjs/config'
@@ -7,8 +7,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { AllExceptionsFilter } from './common/filters/any-exception.filter'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { AuthController } from './modules/auth/auth.controller'
-import { AuthService } from './modules/auth/auth.service'
 import { AuthModule } from './modules/auth/auth.module'
+import { LoggerMiddleware } from './common/middleware/logger.middleware'
 
 @Module({
   imports: [
@@ -20,6 +20,7 @@ import { AuthModule } from './modules/auth/auth.module'
   ],
   controllers: [AppController, AuthController],
   providers: [
+    Logger,
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
@@ -28,7 +29,10 @@ import { AuthModule } from './modules/auth/auth.module'
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
     },
-    AuthService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*')
+  }
+}
