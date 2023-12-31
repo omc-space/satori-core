@@ -11,4 +11,4 @@ export const MONGO_DB = {
     return `mongodb://${userPassword}${this.host}:${this.port}/${this.dbName}`
   },
 }
-export const isDev = false
+export const isDev = process.env.NODE_ENV === 'development'

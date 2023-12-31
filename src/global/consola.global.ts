@@ -6,6 +6,9 @@ import * as winston from 'winston'
 import { join } from 'path'
 import * as dayjs from 'dayjs'
 import { createLogger } from 'winston'
+import * as pkg from '../../package.json'
+import { LOG_DIR } from '~/constants/path.constant'
+import { LOG_MAX_SIZE } from '~/constants/system.constant'
 
 const instance = createLogger({
   transports: [
@@ -13,7 +16,7 @@ const instance = createLogger({
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.ms(),
-        nestWinstonModuleUtilities.format.nestLike('MyApp', {
+        nestWinstonModuleUtilities.format.nestLike(pkg.name.toUpperCase(), {
           colors: true,
           prettyPrint: true,
         }),
@@ -23,18 +26,18 @@ const instance = createLogger({
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.ms(),
-        nestWinstonModuleUtilities.format.nestLike('MyApp', {
+        nestWinstonModuleUtilities.format.nestLike(pkg.name.toUpperCase(), {
           colors: true,
           prettyPrint: true,
         }),
       ),
-      filename: join(
-        process.cwd(),
-        `logs/${dayjs().format('MM-DD HH:mm:ss')}.log`,
-      ),
+      //TODO: 文件名包含':'就无法正常生成log文件
+      filename: join(LOG_DIR, `${dayjs().format('YYYY-MM-DD HH.mm.ss')}.log`),
+      maxsize: LOG_MAX_SIZE,
     }),
     // other transports...
   ],
 })
 
 export default WinstonModule.createLogger({ instance })
+export const logger = instance

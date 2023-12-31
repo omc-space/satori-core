@@ -8,3 +8,5 @@ export const JWT_CONSTANTS = {
   secret: 'ckacwcosijncscaca',
   expiresIn: '1d',
 }
+
+export const LOG_MAX_SIZE = 5242880 // 5MB

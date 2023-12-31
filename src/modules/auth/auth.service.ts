@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { UserService } from '~/modules/user/user.service'
 import { JwtService } from '@nestjs/jwt'
 import { TOKEN_FIELD_NAME } from '~/constants/system.constant'
+import { logger } from '~/global/consola.global'
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
 
   async verifyToken(token: string) {
     if (!token) {
+      logger.error('token不存在,当前未登录')
       throw new UnauthorizedException('当前未登录')
     }
     let payload: any
@@ -24,7 +26,7 @@ export class AuthService {
       payload = await this.jwtService.verifyAsync(token)
     } catch (err) {
       // 验证失败
-      console.log(err)
+      logger.error('token验证失败')
     }
     return payload
   }

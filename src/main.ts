@@ -7,13 +7,13 @@ import {
 import { generateDocument } from './utils/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import { isDev } from './app.config'
-import loggerUtil from './utils/logger.util'
+import logger from '~/global/consola.global'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
-    { logger: loggerUtil },
+    { logger },
   )
 
   generateDocument(app)
