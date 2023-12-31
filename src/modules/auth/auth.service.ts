@@ -1,32 +1,32 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { UserService } from '~/modules/user/user.service'
 import { JwtService } from '@nestjs/jwt'
-import { TOKEN_FIELD_NAME } from '~/constants/system.constant'
-import { logger } from '~/global/consola.global'
+import { UserModel as User } from '../user/user.model'
+import { ReturnModelType } from '@typegoose/typegoose'
+import { InjectModel } from '~/common/decorators/inject.model.decorator'
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private usersService: UserService,
+    @InjectModel(User) private readonly userModel: ReturnModelType<typeof User>,
   ) {}
   async generateToken(payload) {
-    return {
-      [TOKEN_FIELD_NAME]: await this.jwtService.signAsync(payload),
-    }
+    return await this.jwtService.signAsync(payload)
   }
 
   async verifyToken(token: string) {
     if (!token) {
-      logger.error('token不存在,当前未登录')
       throw new UnauthorizedException('当前未登录')
     }
     let payload: any
     try {
       payload = await this.jwtService.verifyAsync(token)
     } catch (err) {
-      // 验证失败
-      logger.error('token验证失败')
+      throw new UnauthorizedException('token验证失败')
+    }
+    const { username } = await this.userModel.findOne()
+    if (payload.username !== username) {
+      throw new UnauthorizedException('token验证失败,用户不存在')
     }
     return payload
   }

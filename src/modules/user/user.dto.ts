@@ -42,3 +42,13 @@ export class UserDto extends UserOptionDto {
   @IsNotEmpty({ message: '密码？' })
   readonly password: string
 }
+
+export class LoginDto {
+  @IsString()
+  @IsNotEmpty({ message: '用户名？' })
+  readonly username: string
+
+  @IsString()
+  @IsNotEmpty({ message: '密码？' })
+  readonly password: string
+}

@@ -9,14 +9,16 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { AuthController } from './modules/auth/auth.controller'
 import { AuthModule } from './modules/auth/auth.module'
 import { LoggerMiddleware } from './common/middleware/logger.middleware'
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule.forRoot(),
     DbModule.forFeature(),
-    AuthModule,
+    PostModule,
   ],
   controllers: [AppController, AuthController],
   providers: [

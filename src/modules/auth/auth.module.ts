@@ -1,12 +1,13 @@
-import { Global, Module } from '@nestjs/common'
+import { Global, Module, forwardRef } from '@nestjs/common'
 import { UserModel } from '../user/user.model'
 import { JwtModule } from '@nestjs/jwt'
 import { JWT_CONSTANTS } from '~/constants/system.constant'
 import { AuthService } from './auth.service'
 
+@Global()
 @Module({
   imports: [
-    UserModel,
+    forwardRef(() => UserModel),
     JwtModule.register({
       global: true,
       secret: JWT_CONSTANTS.secret,
@@ -16,5 +17,4 @@ import { AuthService } from './auth.service'
   providers: [AuthService],
   exports: [AuthService],
 })
-@Global()
 export class AuthModule {}

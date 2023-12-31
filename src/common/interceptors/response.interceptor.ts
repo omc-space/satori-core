@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common'
 import { Observable, map } from 'rxjs'
 import { ApiProperty } from '@nestjs/swagger'
-import { FastifyRequest } from 'fastify'
+import { FastifyReply, FastifyRequest } from 'fastify'
 
 export interface Response<T> {
   data: T
@@ -43,7 +43,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     // const handler = context.getHandler().
     return next.handle().pipe(
       map((data) => {
-        const response = context.switchToHttp().getResponse()
+        const response = context.switchToHttp().getResponse<FastifyReply>()
         if (typeof data === 'undefined') {
           response.status(204)
           return data
@@ -54,7 +54,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
         // }
 
         // return isArrayLike(data) ? { data } : data
-        return new ApiResponse(data, response.status, 'success')
+        return new ApiResponse(data, response.statusCode, 'success')
       }),
     )
   }

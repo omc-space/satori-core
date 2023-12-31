@@ -1,16 +1,18 @@
-import { BadRequestException, HttpCode, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { UserDto } from './user.dto'
-import { Inject } from '@nestjs/common'
-import { UserModel } from './user.model'
+import { UserModel as User } from './user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { sleep } from '~/utils/tools.util'
 import { compareSync } from 'bcryptjs'
+import { AuthService } from '../auth/auth.service'
+import { InjectModel } from '~/common/decorators/inject.model.decorator'
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(UserModel.name)
-    private readonly userModel: ReturnModelType<typeof UserModel>,
+    @InjectModel(User)
+    private readonly userModel: ReturnModelType<typeof User>,
+    private readonly authService: AuthService,
   ) {}
 
   async createMater(userDto: UserDto) {
@@ -20,7 +22,7 @@ export class UserService {
     }
     const res = await this.userModel.create({ ...userDto })
     return {
-      token: 'token',
+      token: await this.authService.generateToken({ id: res.id }),
       username: res.username,
       name: res.name,
     }
@@ -36,16 +38,32 @@ export class UserService {
       await sleep(3000)
       throw new BadRequestException('密码不正确')
     }
-    delete user.password
     return user
   }
 
-  @HttpCode(200)
   async getMasterInfo() {
     return await this.userModel.findOne()
   }
 
   async hasMaster() {
     return !!(await this.userModel.countDocuments())
+  }
+  /**
+   * 记录登录足迹
+   * @param ip ip地址
+   * @returns 上次登录的足迹
+   */
+  async recordFootstep(ip: string) {
+    const master = await this.userModel.findOne()
+    const prevFootstep = {
+      lastLoginTime: master.lastLoginTime,
+      lastLoginIp: master.lastLoginIp,
+    }
+    await master.updateOne({
+      lastLoginTime: new Date(),
+      lastLoginIp: ip,
+    })
+
+    return prevFootstep
   }
 }
