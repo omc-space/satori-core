@@ -9,7 +9,8 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { AuthController } from './modules/auth/auth.controller'
 import { AuthModule } from './modules/auth/auth.module'
 import { LoggerMiddleware } from './common/middleware/logger.middleware'
-import { PostModule } from './modules/post/post.module';
+import { PostModule } from './modules/post/post.module'
+import { CategoryModule } from './modules/category/category.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PostModule } from './modules/post/post.module';
     DbModule.forRoot(),
     DbModule.forFeature(),
     PostModule,
+    CategoryModule,
   ],
   controllers: [AppController, AuthController],
   providers: [

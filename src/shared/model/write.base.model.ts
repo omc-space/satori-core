@@ -1,0 +1,58 @@
+import { PropType, prop } from '@typegoose/typegoose'
+import { BaseCommentIndexModel } from './base-comment.model'
+import {
+  IsDate,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator'
+import { ImageModel } from './image.model'
+import { Transform, Type } from 'class-transformer'
+export class WriteBaseModel extends BaseCommentIndexModel {
+  @prop({ trim: true, index: true, required: true })
+  @IsString()
+  @IsNotEmpty()
+  title: string
+
+  @prop({ trim: true })
+  @IsString()
+  text: string
+
+  @prop({ type: ImageModel })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ImageModel)
+  images?: ImageModel[]
+
+  @prop({ default: null, type: Date })
+  modified: Date | null
+
+  @IsOptional()
+  @IsDate()
+  @Transform(({ value }) => (value ? new Date(value) : void 0))
+  @prop()
+  created?: Date
+
+  @prop(
+    {
+      type: String,
+
+      get(jsonString) {
+        return JSON.safeParse(jsonString)
+      },
+      set(val) {
+        return JSON.stringify(val)
+      },
+    },
+    PropType.NONE,
+  )
+  @IsOptional()
+  @IsObject()
+  meta?: Record<string, any>
+
+  static get protectedKeys() {
+    return super.protectedKeys
+  }
+}

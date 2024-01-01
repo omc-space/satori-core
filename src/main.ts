@@ -8,6 +8,7 @@ import { generateDocument } from './utils/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import { isDev } from './app.config'
 import logger from '~/global/consola.global'
+import { registerJSONGlobal } from './global/json.global'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -27,6 +28,7 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   )
+  registerJSONGlobal()
   await app.listen(3000)
 }
 bootstrap()

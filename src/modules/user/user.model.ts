@@ -1,7 +1,9 @@
 import { Severity, modelOptions, prop } from '@typegoose/typegoose'
 import { hashSync } from 'bcryptjs'
+import { IsOptional } from 'class-validator'
 import { omit } from 'lodash'
 import { Schema } from 'mongoose'
+import { USER_COLLECTION_NAME } from '~/constants/db.constant'
 import { BaseModel } from '~/shared/model/base.model'
 
 export class TokenModel {
@@ -27,7 +29,9 @@ const securityKeys = [
   'password',
 ] as const
 
-@modelOptions({ options: { customName: 'User', allowMixed: Severity.ALLOW } })
+@modelOptions({
+  options: { customName: USER_COLLECTION_NAME, allowMixed: Severity.ALLOW },
+})
 export class UserModel extends BaseModel {
   @prop({ required: true, unique: true, trim: true })
   username!: string
@@ -36,9 +40,11 @@ export class UserModel extends BaseModel {
   name!: string
 
   @prop()
+  @IsOptional()
   introduce?: string
 
   @prop()
+  @IsOptional()
   avatar?: string
 
   @prop({
@@ -57,6 +63,7 @@ export class UserModel extends BaseModel {
   mail: string
 
   @prop()
+  @IsOptional()
   url?: string
 
   @prop()

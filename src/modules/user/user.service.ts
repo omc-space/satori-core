@@ -29,7 +29,10 @@ export class UserService {
   }
 
   async login(username: string, password: string) {
-    const user = await this.userModel.findOne({ username }).select('+password')
+    const user = await this.userModel
+      .findOne({ username })
+      .select('+password')
+      .lean()
     if (!user) {
       await sleep(3000)
       throw new BadRequestException('用户名不正确')
@@ -42,7 +45,11 @@ export class UserService {
   }
 
   async getMasterInfo() {
-    return await this.userModel.findOne()
+    const master = await this.userModel.findOne().lean()
+    if (!master) {
+      throw new BadRequestException('还没有主人呢')
+    }
+    return master
   }
 
   async hasMaster() {

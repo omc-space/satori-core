@@ -39,6 +39,7 @@
     "class-validator": "^0.14.0",
     "dayjs": "^1.11.10",
     "fastify": "^4.25.2",
+    "json5": "^2.2.3",
     "lodash": "^4.17.21",
     "mongoose": "^8.0.3",
     "nest-winston": "^1.9.4",
@@ -93,5 +94,11 @@
     "moduleNameMapper": {
       "^@app/db(|/.*)$": "<rootDir>/libs/db/src/$1"
     }
+  },
+  "lint-staged": {
+    "*.{md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

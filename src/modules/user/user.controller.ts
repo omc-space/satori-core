@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common'
 import { UserService } from './user.service'
 import { LoginDto, UserDto } from './user.dto'
 
@@ -42,5 +42,10 @@ export class UserController {
       avatar,
       id,
     }
+  }
+
+  @Get('master')
+  async masterInfo() {
+    return await this.userService.getMasterInfo()
   }
 }
