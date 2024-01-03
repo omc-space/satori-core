@@ -1,5 +1,8 @@
-import { modelOptions } from '@typegoose/typegoose'
+import { index, modelOptions, plugin } from '@typegoose/typegoose'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Paginate = require('mongoose-paginate-v2')
 
+@plugin(Paginate)
 @modelOptions({
   schemaOptions: {
     toJSON: { virtuals: true, getters: true },
@@ -11,6 +14,8 @@ import { modelOptions } from '@typegoose/typegoose'
     versionKey: false,
   },
 })
+@index({ created: -1 })
+@index({ created: 1 })
 export class BaseModel {
   created?: Date
 

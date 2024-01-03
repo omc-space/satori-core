@@ -1,5 +1,12 @@
 import { UnprocessableEntityException } from '@nestjs/common'
-import { Ref, Severity, index, modelOptions, prop } from '@typegoose/typegoose'
+import {
+  Ref,
+  Severity,
+  index,
+  modelOptions,
+  plugin,
+  prop,
+} from '@typegoose/typegoose'
 import { Transform } from 'class-transformer'
 import {
   ArrayUnique,
@@ -18,7 +25,10 @@ import { POST_COLLECTION_NAME } from '~/constants/db.constant'
 import { WriteBaseModel } from '~/shared/model/write.base.model'
 import { CategoryModel as Category } from '../category/category.model'
 import { CountModel as Count } from '~/shared/model/count.model'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2')
 
+@plugin(aggregatePaginate)
 @index({ slug: 1 })
 @index({ modified: -1 })
 @index({ text: 'text' })

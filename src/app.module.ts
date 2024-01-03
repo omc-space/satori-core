@@ -6,7 +6,6 @@ import { DbModule } from '@app/db'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { AllExceptionsFilter } from './common/filters/any-exception.filter'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
-import { AuthController } from './modules/auth/auth.controller'
 import { AuthModule } from './modules/auth/auth.module'
 import { LoggerMiddleware } from './common/middleware/logger.middleware'
 import { PostModule } from './modules/post/post.module'
@@ -22,7 +21,7 @@ import { CategoryModule } from './modules/category/category.module'
     PostModule,
     CategoryModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController],
   providers: [
     Logger,
     {
