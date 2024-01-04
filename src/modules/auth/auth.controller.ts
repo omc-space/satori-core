@@ -7,7 +7,10 @@ export class AuthController {
 
   @Get('token')
   async getToken() {
-    return await this.authService.generateToken({ username: 'aaa' })
+    return await this.authService.generateToken({
+      id: 'test',
+      username: 'test',
+    })
   }
 
   @Post('token')

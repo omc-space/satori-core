@@ -1,7 +1,9 @@
 import { index, modelOptions, plugin } from '@typegoose/typegoose'
+import { mongooseLeanId } from './plugins/lean-id'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Paginate = require('mongoose-paginate-v2')
 
+@plugin(mongooseLeanId)
 @plugin(Paginate)
 @modelOptions({
   schemaOptions: {

@@ -14,3 +14,8 @@ export const IpLocation = createParamDecorator(
     }
   },
 )
+
+export type IpRecord = {
+  ip: string
+  agent: string
+}

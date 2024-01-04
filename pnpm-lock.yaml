@@ -29,6 +29,9 @@ dependencies:
   '@nestjs/swagger':
     specifier: ^7.1.17
     version: 7.1.17(@fastify/static@6.12.0)(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.14)
+  '@typegoose/auto-increment':
+    specifier: ^4.0.0
+    version: 4.0.0(mongoose@8.0.3)
   '@typegoose/typegoose':
     specifier: ^12.0.0
     version: 12.0.0(mongoose@8.0.3)
@@ -68,6 +71,9 @@ dependencies:
   nest-winston:
     specifier: ^1.9.4
     version: 1.9.4(@nestjs/common@10.3.0)(winston@3.11.0)
+  pluralize:
+    specifier: ^8.0.0
+    version: 8.0.0
   reflect-metadata:
     specifier: ^0.1.13
     version: 0.1.14
@@ -91,9 +97,6 @@ devDependencies:
   '@nestjs/testing':
     specifier: ^10.0.0
     version: 10.3.0(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)
-  '@types/axios':
-    specifier: ^0.14.0
-    version: 0.14.0
   '@types/bcryptjs':
     specifier: ^2.4.6
     version: 2.4.6
@@ -1323,6 +1326,17 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@typegoose/auto-increment@4.0.0(mongoose@8.0.3):
+    resolution: {integrity: sha512-ybDcLqFMOLJlUweXj2Uhw0gNWwi8/+SSQ/bizlhrsD5X9PaVp1fz7ZMhKtKvG5G2+UlGyaKxqOfhLO5d4MtTmA==}
+    engines: {node: '>=16.20.1'}
+    peerDependencies:
+      mongoose: ~8.0.1
+    dependencies:
+      loglevel: 1.8.1
+      mongoose: 8.0.3
+      tslib: 2.6.2
+    dev: false
+
   /@typegoose/typegoose@12.0.0(mongoose@8.0.3):
     resolution: {integrity: sha512-ZkRtjiCO4k05bLPtUXX3Ho7zMLLOKvg6+3JBVtadpC4xUu5htfDf5H+TI+w1jL1d8Q51aN8mHH7L5hr7OSkzoA==}
     engines: {node: '>=16.20.1'}
@@ -1336,15 +1350,6 @@ packages:
       semver: 7.5.4
       tslib: 2.6.2
     dev: false
-
-  /@types/axios@0.14.0:
-    resolution: {integrity: sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ==}
-    deprecated: This is a stub types definition for axios (https://github.com/mzabriskie/axios). axios provides its own type definitions, so you don't need @types/axios installed!
-    dependencies:
-      axios: 1.6.3
-    transitivePeerDependencies:
-      - debug
-    dev: true
 
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2019,6 +2024,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /babel-jest@29.7.0(@babel/core@7.23.6):
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
@@ -3067,6 +3073,7 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
 
   /foreground-child@3.1.1:
     resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
@@ -4753,7 +4760,6 @@ packages:
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
-    dev: true
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -4813,6 +4819,7 @@ packages:
 
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}

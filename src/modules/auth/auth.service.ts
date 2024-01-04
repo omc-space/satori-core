@@ -3,6 +3,14 @@ import { JwtService } from '@nestjs/jwt'
 import { UserModel as User } from '../user/user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { InjectModel } from '~/common/decorators/inject.model.decorator'
+import { logger } from '~/global/consola.global'
+
+export type JwtPayload = {
+  id: string
+  username?: string
+  ip?: string
+  ua?: string
+}
 
 @Injectable()
 export class AuthService {
@@ -10,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectModel(User) private readonly userModel: ReturnModelType<typeof User>,
   ) {}
-  async generateToken(payload) {
+  async generateToken(payload: JwtPayload) {
     return await this.jwtService.signAsync(payload)
   }
 
@@ -22,11 +30,12 @@ export class AuthService {
     try {
       payload = await this.jwtService.verifyAsync(token)
     } catch (err) {
+      logger.error('token验证失败,error->', err?.name)
       throw new UnauthorizedException('token验证失败')
     }
-    const { username } = await this.userModel.findOne()
-    if (payload.username !== username) {
-      throw new UnauthorizedException('token验证失败,用户不存在')
+    const { id } = await this.userModel.findOne()
+    if (payload.id !== id) {
+      throw new UnauthorizedException('token验证失败,不是主人')
     }
     return payload
   }

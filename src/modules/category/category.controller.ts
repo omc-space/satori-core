@@ -14,6 +14,7 @@ import { HTTPDecorators } from '~/common/decorators/http.decorator'
 import { MongoIdDto } from '~/shared/dto/id.dto'
 import { MultiCategoriesQueryDto } from './category.dto'
 import { PostService } from '../post/post.service'
+import { Auth } from '~/common/decorators/auth.decorator'
 
 @Controller('categories')
 export class CategoryController {
@@ -23,6 +24,7 @@ export class CategoryController {
   ) {}
 
   @Post('/')
+  @Auth()
   @HTTPDecorators.Idempotence()
   async create(@Body() category: CategoryModel) {
     this.categoryService.create(category.name, category.slug)
@@ -73,6 +75,7 @@ export class CategoryController {
   }
 
   @Put('/:id')
+  @Auth()
   async modify(@Param() params: MongoIdDto, @Body() body: CategoryModel) {
     const { type, slug, name } = body
     const { id } = params
@@ -85,6 +88,7 @@ export class CategoryController {
   }
 
   @Delete('/:id')
+  @Auth()
   async delete(@Param() params: MongoIdDto) {
     const { id } = params
     return await this.categoryService.deleteById(id)
