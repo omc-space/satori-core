@@ -1,5 +1,4 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common'
-import { DbService } from './db.service'
+import { DynamicModule, Provider } from '@nestjs/common'
 import { DB_CONNECTION_TOKEN } from '~/constants/system.constant'
 import { mongoose } from '@typegoose/typegoose'
 import { MONGO_DB } from '~/app.config'
@@ -7,10 +6,6 @@ import { dbProviders } from './db.providers'
 
 export type ClassType = { new (...args): any }
 
-@Module({
-  providers: [DbService],
-  exports: [DbService],
-})
 export class DbModule {
   static forRoot(uri?: string, options = {}): DynamicModule {
     const providers: Provider[] = [

@@ -6,9 +6,13 @@ import { CannotFindException } from '~/common/exceptions/cant-find.exception'
 import { BaseCrudFactory } from '~/transformers/crud-factor.transformer'
 
 import { TopicModel } from './topic.model'
+import { InjectModel } from '~/common/decorators/inject.model.decorator'
 
 class Upper {
-  constructor(private readonly _model: MongooseModel<TopicModel>) {}
+  constructor(
+    @InjectModel(TopicModel)
+    private readonly _model: MongooseModel<TopicModel>,
+  ) {}
 
   @Get('/slug/:slug')
   async getTopicByTopic(@Param('slug') slug: string) {

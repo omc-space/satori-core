@@ -11,6 +11,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware'
 import { PostModule } from './modules/post/post.module'
 import { CategoryModule } from './modules/category/category.module'
 import { NoteModule } from './modules/note/note.module'
+import { TopicModule } from './modules/topic/topic.module'
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { NoteModule } from './modules/note/note.module'
     PostModule,
     CategoryModule,
     NoteModule,
+    TopicModule,
   ],
   controllers: [AppController],
   providers: [

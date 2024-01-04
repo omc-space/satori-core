@@ -1,4 +1,4 @@
-import pluralize from 'pluralize'
+// import pluralize from 'pluralize'
 import type { Type } from '@nestjs/common'
 import type { AnyParamConstructor } from '@typegoose/typegoose/lib/types'
 import type { BaseModel } from '~/shared/model/base.model'
@@ -35,8 +35,7 @@ export function BaseCrudFactory<
   T extends AnyParamConstructor<BaseModel & { id: string }>,
 >({ model, classUpper }: { model: T; classUpper?: ClassType<any> }): Type<any> {
   const prefix = model.name.toLowerCase().replace(/model$/, '')
-  const pluralizeName = pluralize(prefix) as string
-
+  // const pluralizeName = pluralize(prefix) as string
   // const eventNamePrefix = `${prefix.toUpperCase()}_`
 
   class PDto extends PartialType(model as any) {}
@@ -45,8 +44,7 @@ export function BaseCrudFactory<
 
   const Upper = classUpper || class {}
 
-  // @ApiController(pluralizeName)
-  @Controller(pluralizeName)
+  @Controller(prefix)
   class BaseCrud extends Upper {
     // constructor(
     //   @InjectModel(model) private readonly _model: MongooseModel<T>,
