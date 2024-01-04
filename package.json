@@ -95,10 +95,7 @@
     "roots": [
       "<rootDir>/src/",
       "<rootDir>/libs/"
-    ],
-    "moduleNameMapper": {
-      "^@app/db(|/.*)$": "<rootDir>/libs/db/src/$1"
-    }
+    ]
   },
   "lint-staged": {
     "*.{md}": [
