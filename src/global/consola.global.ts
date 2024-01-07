@@ -4,7 +4,7 @@ import {
 } from 'nest-winston'
 import * as winston from 'winston'
 import { join } from 'path'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { createLogger } from 'winston'
 import * as pkg from '../../package.json'
 import { LOG_DIR } from '~/constants/path.constant'

@@ -6,12 +6,16 @@ import { getLessThanNow } from '~/utils'
 import { omit } from 'lodash'
 import { isDefined, isMongoId } from 'class-validator'
 import { NoContentCanBeModifiedException } from '~/common/exceptions/no-content-canbe-modified.exception'
+import { ReturnModelType } from '@typegoose/typegoose'
+import { FilterQuery } from 'mongoose'
+import type { DocumentType } from '@typegoose/typegoose'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class NoteService {
   constructor(
     @InjectModel(NoteModel)
-    private readonly noteModel: MongooseModel<NoteModel>,
+    private readonly noteModel: ReturnModelType<typeof NoteModel>,
   ) {}
 
   public get model() {
@@ -120,5 +124,51 @@ export class NoteService {
         ],
       },
     ],
+  }
+
+  async getLatestOne(
+    condition: FilterQuery<DocumentType<NoteModel>> = {},
+    projection: any = undefined,
+  ) {
+    const latest: NoteModel | null = await this.noteModel
+      .findOne(condition, projection)
+      .sort({
+        created: -1,
+      })
+      .lean({
+        getters: true,
+        autopopulate: true,
+      })
+
+    if (!latest) {
+      return null
+    }
+
+    const next = await this.noteModel
+      .findOne({
+        created: {
+          $lt: latest.created,
+        },
+      })
+      .sort({
+        created: -1,
+      })
+      .select('nid _id')
+      .lean()
+
+    return {
+      latest,
+      next,
+    }
+  }
+
+  public checkNoteIsSecret(note: NoteModel) {
+    if (!note.secret) {
+      return false
+    }
+
+    const isSecret = dayjs(note.secret).isAfter(new Date())
+
+    return isSecret
   }
 }

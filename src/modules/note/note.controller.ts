@@ -54,14 +54,17 @@ export class NoteController {
       Object.assign(condition, this.noteService.publicNoteQueryCondition)
     }
 
-    return await this.noteService.model.paginate(db_query ?? condition, {
-      limit: size,
-      page,
-      select: isMaster
-        ? select
-        : select?.replace(/[+-]?(coordinates|location|password)/g, ''),
-      sort: sortBy ? { [sortBy]: sortOrder || -1 } : { created: -1 },
-    })
+    return await (this.noteService.model as any).paginate(
+      db_query ?? condition,
+      {
+        limit: size,
+        page,
+        select: isMaster
+          ? select
+          : select?.replace(/[+-]?(coordinates|location|password)/g, ''),
+        sort: sortBy ? { [sortBy]: sortOrder || -1 } : { created: -1 },
+      },
+    )
   }
 
   @Get('/:id')
@@ -80,5 +83,19 @@ export class NoteController {
     }
 
     return current
+  }
+
+  @Get('/latest')
+  async getLatestOne(@IsMaster() isMaster: boolean) {
+    const result = await this.noteService.getLatestOne(
+      isMaster ? {} : this.noteService.publicNoteQueryCondition,
+      isMaster ? '+location +coordinates' : '-location -coordinates',
+    )
+
+    if (!result) return null
+    const { latest, next } = result
+    latest.text = this.noteService.checkNoteIsSecret(latest) ? '' : latest.text
+
+    return { data: latest, next }
   }
 }

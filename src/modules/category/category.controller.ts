@@ -27,7 +27,7 @@ export class CategoryController {
   @Auth()
   @HTTPDecorators.Idempotence()
   async create(@Body() category: CategoryModel) {
-    this.categoryService.create(category.name, category.slug)
+    await this.categoryService.create(category.name, category.slug)
     return 'Category created'
   }
 

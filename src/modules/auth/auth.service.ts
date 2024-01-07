@@ -30,7 +30,6 @@ export class AuthService {
     try {
       payload = await this.jwtService.verifyAsync(token)
     } catch (err) {
-      logger.error('token验证失败,error->', err?.name)
       throw new UnauthorizedException('token验证失败')
     }
     const { id } = await this.userModel.findOne()

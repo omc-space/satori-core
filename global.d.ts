@@ -1,11 +1,13 @@
 /// <reference types="zx/globals" />
-import type { Document, PaginateModel } from 'mongoose'
-import type { ModelType } from '@typegoose/typegoose/lib/types'
+import type { Document } from 'mongoose'
+import { PaginateModel } from 'mongoose-paginate-v2'
+import type { ModelType, ReturnModelType } from '@typegoose/typegoose/lib/types'
 
 declare global {
   export type KV<T = any> = Record<string, T>
 
-  export type MongooseModel<T> = ModelType<T> & PaginateModel<T & Document>
+  export type MongooseModel<T> = ReturnModelType<T> &
+    PaginateModel<T & Document>
 
   export const isDev: boolean
 

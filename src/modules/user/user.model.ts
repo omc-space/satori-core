@@ -5,6 +5,9 @@ import { omit } from 'lodash'
 import { Schema } from 'mongoose'
 import { USER_COLLECTION_NAME } from '~/constants/db.constant'
 import { BaseModel } from '~/shared/model/base.model'
+import type { DocumentType } from '@typegoose/typegoose'
+
+export type UserDocument = DocumentType<UserModel>
 
 export class TokenModel {
   _id?: string

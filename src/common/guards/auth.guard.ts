@@ -11,11 +11,11 @@ import { AuthService } from '~/modules/auth/auth.service'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
+  constructor(protected authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>()
-    const token = request.headers[TOKEN_FIELD_NAME] as string
+    const token = request.headers[TOKEN_FIELD_NAME].toString()
 
     if (!token) {
       throw new UnauthorizedException('未登录')

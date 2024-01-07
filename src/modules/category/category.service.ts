@@ -25,7 +25,10 @@ export class CategoryService {
 
   async create(name: string, slug: string) {
     // 检查slug是否已存在
-    const slugExists = await this.categoryModel.exists({ name })
+    const slugExists = await this.categoryModel.exists({
+      name,
+      slug: slug ?? name,
+    })
     if (slugExists) {
       throw new BadRequestException('分类slug已存在')
     }
