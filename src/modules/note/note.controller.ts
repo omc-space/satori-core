@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common'
+import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { NoteService } from './note.service'
 import { NoteModel } from './note.model'
 import { HTTPDecorators, Paginator } from '~/common/decorators/http.decorator'
@@ -17,8 +8,9 @@ import { IsMaster } from '~/common/decorators/role.decorator'
 import { NoteQueryDto } from './note.dto'
 import { addYearCondition } from '~/transformers/db-query.transformer'
 import { CannotFindException } from '~/common/exceptions/cant-find.exception'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@Controller('notes')
+@ApiController('notes')
 export class NoteController {
   constructor(private readonly noteService: NoteService) {}
 

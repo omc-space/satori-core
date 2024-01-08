@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common'
+import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { CategoryService } from './category.service'
 import { CategoryModel, CategoryType } from './category.model'
 import { HTTPDecorators } from '~/common/decorators/http.decorator'
@@ -15,8 +6,9 @@ import { MongoIdDto } from '~/shared/dto/id.dto'
 import { MultiCategoriesQueryDto } from './category.dto'
 import { PostService } from '../post/post.service'
 import { Auth } from '~/common/decorators/auth.decorator'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@Controller('categories')
+@ApiController('categories')
 export class CategoryController {
   constructor(
     private readonly categoryService: CategoryService,

@@ -14,23 +14,19 @@ import { NoteModule } from './modules/note/note.module'
 import { TopicModule } from './modules/topic/topic.module'
 import { RequestContextMiddleware } from './common/middlewares/request-context.middleware'
 import { RolesGuard } from './common/guards/roles.guard'
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { ThrottlerGuard } from '@nestjs/throttler'
 import { ConfigsModule } from './modules/configs/configs.module'
 import { CommentModule } from './modules/comment/comment.module'
 import { SayModule } from './modules/say/say.module'
 import { RedisModule } from './modules/redis/redis.module'
+import { OptionModule } from './modules/option/option.module'
+import { HelperModule } from './shared/helper/helper.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule.forRoot(),
     DbModule.forFeature(),
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000,
-        limit: 50,
-      },
-    ]),
     AuthModule,
     UserModule,
     PostModule,
@@ -41,6 +37,8 @@ import { RedisModule } from './modules/redis/redis.module'
     CommentModule,
     SayModule,
     RedisModule,
+    OptionModule,
+    HelperModule,
   ],
   controllers: [AppController],
   providers: [

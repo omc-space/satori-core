@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  Patch,
-} from '@nestjs/common'
+import { Body, Get, Param, Post, Query, Req, Patch } from '@nestjs/common'
 import { CommentService } from './comment.service'
 import { PagerDto } from '~/shared/dto/pager.dto'
 import { Auth } from '~/common/decorators/auth.decorator'
@@ -32,10 +23,11 @@ import { UserModel } from '../user/user.model'
 import { CurrentUser } from '~/common/decorators/current-user.decorator'
 import { NoContentCanBeModifiedException } from '~/common/exceptions/no-content-canbe-modified.exception'
 import { isUndefined } from 'lodash'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
 const NESTED_REPLY_MAX = 10
 const idempotenceMessage = '哦吼，这句话你已经说过啦'
-@Controller('comment')
+@ApiController('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 

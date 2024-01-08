@@ -1,6 +1,5 @@
 import {
   Body,
-  Controller,
   Delete,
   Get,
   NotFoundException,
@@ -22,8 +21,9 @@ import { CannotFindException } from '~/common/exceptions/cant-find.exception'
 import { IpLocation, IpRecord } from '~/common/decorators/ip.decorator'
 import { CategoryModel } from '../category/category.model'
 import { CategoryAndSlugDto } from './post.dto'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@Controller('post')
+@ApiController('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

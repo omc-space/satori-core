@@ -5,7 +5,6 @@ import type { BaseModel } from '~/shared/model/base.model'
 
 import {
   Body,
-  Controller,
   Delete,
   Get,
   HttpCode,
@@ -25,6 +24,7 @@ import { HTTPDecorators, Paginator } from '~/common/decorators/http.decorator'
 import { MongoIdDto } from '~/shared/dto/id.dto'
 import { PagerDto } from '~/shared/dto/pager.dto'
 import { InjectModel } from '~/common/decorators/inject.model.decorator'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 // import { InjectModel } from '~/common/decorators/inject.model.decorator'
 
 export type BaseCrudModuleType<T> = {
@@ -45,7 +45,7 @@ export function BaseCrudFactory<
 
   const Upper = classUpper || class {}
 
-  @Controller(prefix)
+  @ApiController(prefix)
   class BaseCrud extends Upper {
     constructor(@InjectModel(model) private readonly _model: MongooseModel<T>) {
       super(_model)

@@ -1,12 +1,13 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common'
+import { Body, Get, HttpCode, Post } from '@nestjs/common'
 import { UserService } from './user.service'
 import { LoginDto, UserDto } from './user.dto'
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from '../auth/auth.service'
 import { IpLocation } from '~/common/decorators/ip.decorator'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@Controller('user')
+@ApiController('user')
 @ApiTags('用户模块')
 export class UserController {
   constructor(

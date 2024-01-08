@@ -143,11 +143,9 @@ data: ${this.prettyStringify(req.data)}`,
           return error
         }
         this.logger.error(
-          chalk.red(
-            `HTTP Response Failed ${`${res.config.baseURL || ''}${
-              res.config.url
-            }`}\n${this.prettyStringify(res.data)}`,
-          ),
+          `HTTP Response Failed ${`${res.config.baseURL || ''}${
+            res.config.url
+          }`}\n${this.prettyStringify(res.data)}`,
         )
 
         return error

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Query } from '@nestjs/common'
+import { Get, Post, Query } from '@nestjs/common'
 import { AuthService } from './auth.service'
+import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@Controller('auth')
+@ApiController('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

@@ -24,6 +24,7 @@ import { generateDefaultConfig } from './configs.default'
 import { decryptObject, encryptObject } from './configs.encrypt.util'
 import { configDtoMapping, IConfig } from './configs.interface'
 import { OptionModel } from './configs.model'
+import { isDev } from '~/app.config'
 
 const configsKeySet = new Set(Object.keys(configDtoMapping))
 
