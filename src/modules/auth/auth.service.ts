@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt'
 import { UserModel as User } from '../user/user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { InjectModel } from '~/common/decorators/inject.model.decorator'
-import { logger } from '~/global/consola.global'
 
 export type JwtPayload = {
   id: string

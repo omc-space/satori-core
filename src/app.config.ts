@@ -11,4 +11,11 @@ export const MONGO_DB = {
     return `mongodb://${userPassword}${this.host}:${this.port}/${this.dbName}`
   },
 }
+
+export const ENCRYPT = {
+  key: 'encrypt-key',
+  enable: true,
+  algorithm: 'aes-256-ecb',
+}
+
 export const isDev = process.env.NODE_ENV === 'development'

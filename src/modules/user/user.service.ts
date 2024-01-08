@@ -55,6 +55,7 @@ export class UserService {
   async hasMaster() {
     return !!(await this.userModel.countDocuments())
   }
+
   /**
    * 记录登录足迹
    * @param ip ip地址
@@ -72,5 +73,9 @@ export class UserService {
     })
 
     return prevFootstep
+  }
+
+  async getMaster() {
+    return await this.userModel.findOne().lean()
   }
 }
