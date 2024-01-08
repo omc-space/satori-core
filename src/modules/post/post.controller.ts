@@ -1,10 +1,27 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { PostService } from './post.service'
 import { PipelineStage } from 'mongoose'
-import { PostModel } from './post.model'
-import { Paginator } from '~/common/decorators/http.decorator'
+import { PartialPostModel, PostModel } from './post.model'
+import { HTTPDecorators, Paginator } from '~/common/decorators/http.decorator'
 import { PagerDto } from '~/shared/dto/pager.dto'
 import { addYearCondition } from '~/transformers/db-query.transformer'
+import { Auth } from '~/common/decorators/auth.decorator'
+import { MongoIdDto } from '~/shared/dto/id.dto'
+import { CannotFindException } from '~/common/exceptions/cant-find.exception'
+import { IpLocation, IpRecord } from '~/common/decorators/ip.decorator'
+import { CategoryModel } from '../category/category.model'
+import { CategoryAndSlugDto } from './post.dto'
 
 @Controller('post')
 export class PostController {
@@ -96,5 +113,112 @@ export class PostController {
         })
         return res
       })
+  }
+
+  @Get('/:id')
+  @Auth()
+  async getById(@Param() params: MongoIdDto) {
+    const { id } = params
+    const doc = await this.postService.model
+      .findById(id)
+      .populate('category')
+      .populate({
+        path: 'related',
+        select: 'title slug id _id categoryId category',
+      })
+    if (!doc) {
+      throw new CannotFindException()
+    }
+
+    return doc
+  }
+
+  @Get('/latest')
+  async getLatest(@IpLocation() ip: IpRecord) {
+    const last = await this.postService.model
+      .findOne({})
+      .sort({ created: -1 })
+      .lean({ getters: true, autopopulate: true })
+    if (!last) {
+      throw new CannotFindException()
+    }
+    return this.getByCateAndSlug(
+      {
+        category: (last.category as CategoryModel).slug,
+        slug: last.slug,
+      },
+      ip,
+    )
+  }
+
+  @Get('/:category/:slug')
+  async getByCateAndSlug(
+    @Param() params: CategoryAndSlugDto,
+    @IpLocation() { ip }: IpRecord,
+  ) {
+    const { category, slug } = params
+
+    const categoryDocument = await this.postService.getCategoryBySlug(category)
+    if (!categoryDocument) {
+      throw new NotFoundException('该分类未找到 (｡•́︿•̀｡)')
+    }
+
+    const postDocument = await this.postService.model
+      .findOne({
+        slug,
+        categoryId: categoryDocument._id,
+        // ...condition,
+      })
+      .populate('category')
+      .populate({
+        path: 'related',
+        select: 'title slug id _id categoryId category',
+      })
+
+    if (!postDocument) {
+      throw new CannotFindException()
+    }
+    // TODO: 判断Ip是否点赞
+    // const liked = await this.countingService.getThisRecordIsLiked(
+    //   postDocument.id,
+    //   ip,
+    // )
+    const liked = !!ip
+    return { ...postDocument.toObject(), liked }
+  }
+
+  @Post('/')
+  @Auth()
+  @HTTPDecorators.Idempotence()
+  async create(@Body() body: PostModel) {
+    return await this.postService.create({
+      ...body,
+      created: new Date(),
+      modified: null,
+      slug: body.slug,
+      related: body.relatedId as any,
+    })
+  }
+
+  @Put('/:id')
+  @Auth()
+  async update(@Param() params: MongoIdDto, @Body() body: PostModel) {
+    return await this.postService.updateById(params.id, body)
+  }
+
+  @Patch('/:id')
+  @Auth()
+  async patch(@Param() params: MongoIdDto, @Body() body: PartialPostModel) {
+    await this.postService.updateById(params.id, body)
+    return
+  }
+
+  @Delete('/:id')
+  @Auth()
+  async deletePost(@Param() params: MongoIdDto) {
+    const { id } = params
+    await this.postService.deletePost(id)
+
+    return
   }
 }

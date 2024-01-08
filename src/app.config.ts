@@ -19,3 +19,13 @@ export const ENCRYPT = {
 }
 
 export const isDev = process.env.NODE_ENV === 'development'
+
+export const REDIS = {
+  host: 'localhost',
+  port: 6379,
+  password: null,
+  ttl: null,
+  httpCacheTTL: 15,
+  max: 120,
+  disableApiCache: isDev,
+}

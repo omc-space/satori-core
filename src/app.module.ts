@@ -18,6 +18,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { ConfigModule as CongfigM } from './modules/config/config.module'
 import { CommentModule } from './modules/comment/comment.module'
 import { SayModule } from './modules/say/say.module'
+import { RedisModule } from './modules/redis/redis.module'
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { SayModule } from './modules/say/say.module'
     CongfigM,
     CommentModule,
     SayModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

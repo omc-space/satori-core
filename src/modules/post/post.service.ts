@@ -16,6 +16,8 @@ import { NoContentCanBeModifiedException } from '~/common/exceptions/no-content-
 import { isDefined } from 'class-validator'
 import { omit } from 'lodash'
 import type { AggregatePaginateModel, Document, Types } from 'mongoose'
+import { CommentModel } from '../comment/comment.model'
+import { CollectionRefTypes } from '~/constants/db.constant'
 
 @Injectable()
 export class PostService {
@@ -25,6 +27,8 @@ export class PostService {
       AggregatePaginateModel<PostModel & Document>,
     @Inject(forwardRef(() => CategoryService))
     private readonly categoryService: CategoryService,
+    @InjectModel(CommentModel)
+    private readonly commentModel: MongooseModel<CommentModel>,
   ) {}
 
   get model() {
@@ -70,7 +74,7 @@ export class PostService {
     return doc
   }
 
-  async updateById(id: string, post: PostModel) {
+  async updateById(id: string, post: Partial<PostModel>) {
     const oldPost = await this.postModel.findById(id)
     if (!oldPost) {
       throw new NoContentCanBeModifiedException()
@@ -196,5 +200,21 @@ export class PostService {
         return i.save()
       }),
     )
+  }
+
+  async getCategoryBySlug(slug: string) {
+    return await this.categoryService.model.findOne({ slug })
+  }
+
+  async deletePost(id: string) {
+    const deletedPost = await this.postModel.findById(id).lean()
+    await Promise.all([
+      this.model.deleteOne({ _id: id }),
+      this.commentModel.deleteMany({
+        ref: id,
+        refType: CollectionRefTypes.Post,
+      }),
+      this.removeRelatedEachOther(deletedPost),
+    ])
   }
 }

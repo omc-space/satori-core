@@ -25,6 +25,7 @@ import { POST_COLLECTION_NAME } from '~/constants/db.constant'
 import { WriteBaseModel } from '~/shared/model/write.base.model'
 import { CategoryModel as Category } from '../category/category.model'
 import { CountModel as Count } from '~/shared/model/count.model'
+import { PartialType } from '@nestjs/mapped-types'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2')
 
@@ -125,3 +126,5 @@ export class PostModel extends WriteBaseModel {
     return ['count'].concat(super.protectedKeys)
   }
 }
+
+export class PartialPostModel extends PartialType(PostModel) {}
