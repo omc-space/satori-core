@@ -8,6 +8,7 @@ import { TopicModel } from '~/modules/topic/topic.model'
 import { UserModel } from '~/modules/user/user.model'
 import { SayModel } from '../say/say.model'
 import { CommentModel } from '../comment/comment.model'
+import { OptionModel } from '../configs/configs.model'
 
 export const dbProviders: Provider[] = [
   UserModel,
@@ -17,6 +18,7 @@ export const dbProviders: Provider[] = [
   NoteModel,
   SayModel,
   CommentModel,
+  OptionModel,
 ].map((model) => ({
   provide: getModelToken(model.name),
   useFactory: () => getModelForClass(model),

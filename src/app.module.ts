@@ -15,7 +15,7 @@ import { TopicModule } from './modules/topic/topic.module'
 import { RequestContextMiddleware } from './common/middlewares/request-context.middleware'
 import { RolesGuard } from './common/guards/roles.guard'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
-import { ConfigModule as CongfigM } from './modules/config/config.module'
+import { ConfigsModule } from './modules/configs/configs.module'
 import { CommentModule } from './modules/comment/comment.module'
 import { SayModule } from './modules/say/say.module'
 import { RedisModule } from './modules/redis/redis.module'
@@ -37,7 +37,7 @@ import { RedisModule } from './modules/redis/redis.module'
     CategoryModule,
     NoteModule,
     TopicModule,
-    CongfigM,
+    ConfigsModule,
     CommentModule,
     SayModule,
     RedisModule,
