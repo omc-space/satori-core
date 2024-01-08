@@ -12,6 +12,7 @@ import {
   CommentOptionsDto,
   FeatureListDto,
   FriendLinkOptionsDto,
+  MailOptionsDto,
   SeoDto,
   TextOptionsDto,
   UrlDto,
@@ -51,6 +52,9 @@ export abstract class IConfig {
 
   @ConfigField(() => FeatureListDto)
   featureList: Required<FeatureListDto>
+
+  @ConfigField(() => MailOptionsDto)
+  mailOptions: Required<MailOptionsDto>
 }
 
 export type IConfigKeys = keyof IConfig

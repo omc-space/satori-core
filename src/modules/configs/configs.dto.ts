@@ -1,11 +1,15 @@
-import { Exclude } from 'class-transformer'
+import { Exclude, Transform, Type } from 'class-transformer'
 import {
   ArrayUnique,
   IsBoolean,
+  IsEmail,
   IsIP,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
+  ValidateNested,
 } from 'class-validator'
 import { JSONSchema } from 'class-validator-jsonschema'
 
@@ -15,9 +19,11 @@ import { Encrypt } from './configs.encrypt.util'
 import {
   JSONSchemaArrayField,
   JSONSchemaHalfGirdPlainField,
+  JSONSchemaNumberField,
   JSONSchemaPasswordField,
   JSONSchemaPlainField,
   JSONSchemaToggleField,
+  halfFieldOption,
 } from '~/common/decorators/configs.jsonschema.decorator'
 
 @JSONSchema({ title: 'SEO 优化' })
@@ -63,45 +69,46 @@ export class UrlDto {
   wsUrl: string
 }
 
-// class MailOption {
-//   @IsInt()
-//   @Transform(({ value: val }) => parseInt(val))
-//   @IsOptional()
-//   @JSONSchemaNumberField('发件邮箱端口', halfFieldOption)
-//   port: number
-//   @IsUrl({ require_protocol: false })
-//   @IsOptional()
-//   @JSONSchemaHalfGirdPlainField('发件邮箱 host')
-//   host: string
-//   @IsBoolean()
-//   @IsOptional()
-//   @JSONSchemaToggleField('使用 SSL/TLS')
-//   secure: boolean
-// }
-// @JSONSchema({ title: '邮件通知设置' })
-// export class MailOptionsDto {
-//   @IsBoolean()
-//   @IsOptional()
-//   @JSONSchemaToggleField('开启邮箱提醒')
-//   enable: boolean
-//   @IsEmail()
-//   @IsOptional()
-//   @JSONSchemaHalfGirdPlainField('发件邮箱地址')
-//   user: string
-//   @IsString()
-//   @IsNotEmpty()
-//   @IsOptional()
-//   @Exclude({ toPlainOnly: true })
-//   @JSONSchemaPasswordField('发件邮箱密码', halfFieldOption)
-//   @Encrypt
-//   pass: string
+class MailOption {
+  @IsInt()
+  @Transform(({ value: val }) => parseInt(val))
+  @IsOptional()
+  @JSONSchemaNumberField('发件邮箱端口', halfFieldOption)
+  port: number
+  @IsUrl({ require_protocol: false })
+  @IsOptional()
+  @JSONSchemaHalfGirdPlainField('发件邮箱 host')
+  host: string
+  @IsBoolean()
+  @IsOptional()
+  @JSONSchemaToggleField('使用 SSL/TLS')
+  secure: boolean
+}
+@JSONSchema({ title: '邮件通知设置' })
+export class MailOptionsDto {
+  @IsBoolean()
+  @IsOptional()
+  @JSONSchemaToggleField('开启邮箱提醒')
+  enable: boolean
+  @IsEmail()
+  @IsOptional()
+  @JSONSchemaHalfGirdPlainField('发件邮箱地址')
+  user: string
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @Exclude({ toPlainOnly: true })
+  @JSONSchemaPasswordField('发件邮箱密码', halfFieldOption)
+  @Encrypt
+  pass: string
 
-//   @ValidateNested()
-//   @Type(() => MailOption)
-//   @IsOptional()
-//   @JSONSchema({ 'ui:option': { connect: true } })
-//   options?: MailOption
-// }
+  @ValidateNested()
+  @Type(() => MailOption)
+  @IsOptional()
+  //@ts-ignore
+  @JSONSchema({ 'ui:option': { connect: true } })
+  options?: MailOption
+}
 
 @JSONSchema({ title: '评论设置' })
 export class CommentOptionsDto {

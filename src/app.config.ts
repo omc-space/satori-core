@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios'
+
 export const MONGO_DB = {
   dbName: 'satori',
   host: '127.0.0.1',
@@ -12,6 +14,11 @@ export const MONGO_DB = {
   },
 }
 
+export const API_VERSION = 1
+
+export const AXIOS_CONFIG: AxiosRequestConfig = {
+  timeout: 10000,
+}
 export const ENCRYPT = {
   key: 'encrypt-key',
   enable: true,
