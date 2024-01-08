@@ -15,6 +15,10 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
+  public get model() {
+    return this.userModel
+  }
+
   async createMater(userDto: UserDto) {
     const hasMaster = await this.hasMaster()
     if (hasMaster) {

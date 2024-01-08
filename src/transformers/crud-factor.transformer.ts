@@ -24,6 +24,7 @@ import { HTTPDecorators, Paginator } from '~/common/decorators/http.decorator'
 // import { EventManagerService } from '~/processors/helper/helper.event.service'
 import { MongoIdDto } from '~/shared/dto/id.dto'
 import { PagerDto } from '~/shared/dto/pager.dto'
+import { InjectModel } from '~/common/decorators/inject.model.decorator'
 // import { InjectModel } from '~/common/decorators/inject.model.decorator'
 
 export type BaseCrudModuleType<T> = {
@@ -46,13 +47,9 @@ export function BaseCrudFactory<
 
   @Controller(prefix)
   class BaseCrud extends Upper {
-    // constructor(
-    //   @InjectModel(model) private readonly _model: MongooseModel<T>,
-    //   private readonly eventManager: EventManagerService,
-    // ) {
-    //   super(_model, eventManager)
-    // }
-
+    constructor(@InjectModel(model) private readonly _model: MongooseModel<T>) {
+      super(_model)
+    }
     public get model() {
       return this._model
     }

@@ -3,10 +3,10 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
   Post,
   Query,
   Req,
+  Patch,
 } from '@nestjs/common'
 import { CommentService } from './comment.service'
 import { PagerDto } from '~/shared/dto/pager.dto'
@@ -149,6 +149,14 @@ export class CommentController {
     return comments
   }
 
+  /**
+   * 创建评论
+   * @param params
+   * @param body
+   * @param isMaster
+   * @param ipLocation
+   * @param query
+   */
   @Post('/:id')
   @HTTPDecorators.Idempotence({
     expired: 20,
@@ -294,6 +302,12 @@ export class CommentController {
     return await this.replyByCid(params, model, undefined, true, ipLocation)
   }
 
+  /**
+   * 修改评论状态
+   * @param params
+   * @param body
+   * @returns
+   */
   @Patch('/:id')
   @Auth()
   async modifyCommentState(

@@ -17,6 +17,7 @@ import { RolesGuard } from './common/guards/roles.guard'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { ConfigModule as CongfigM } from './modules/config/config.module'
 import { CommentModule } from './modules/comment/comment.module'
+import { SayModule } from './modules/say/say.module'
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommentModule } from './modules/comment/comment.module'
     TopicModule,
     CongfigM,
     CommentModule,
+    SayModule,
   ],
   controllers: [AppController],
   providers: [
