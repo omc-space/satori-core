@@ -27,8 +27,9 @@ export class AssetService {
    */
   public embedAssetPath = path.resolve(cwd, 'assets')
   // 在线资源的地址 `/` 结尾
-  private onlineAssetPath =
-    'https://cdn.jsdelivr.net/gh/mx-space/assets@master/'
+  // TODO: 线上资源地址
+  private onlineAssetPath = 'http://localhost'
+  // 'https://cdn.jsdelivr.net/gh/mx-space/assets@master/'
 
   private checkRoot() {
     if (!existsSync(this.embedAssetPath)) {
@@ -103,7 +104,7 @@ export class AssetService {
   ) {
     await fs.mkdir(
       (() => {
-        const p = join(USER_ASSET_DIR, path).split('/')
+        const p = join(USER_ASSET_DIR, path).split(/\\|\//)
         return p.slice(0, p.length - 1).join('/')
       })(),
       { recursive: true },
