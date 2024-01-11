@@ -1,0 +1,19 @@
+{
+  "name": "api-client",
+  "version": "1.0.0",
+  "description": "satori-core api client",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.3",
+    "tsup": "^8.0.1",
+    "vite": "^5.0.11",
+    "vite-tsconfig-paths": "^4.2.3",
+    "vitest": "^1.1.3"
+  }
+}
