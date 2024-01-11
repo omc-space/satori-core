@@ -24,7 +24,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<FastifyReply>()
     const request = ctx.getRequest<FastifyRequest>()
 
-    const status = HttpStatus.INTERNAL_SERVER_ERROR
+    const status =
+      (exception as any)?.status ?? HttpStatus.INTERNAL_SERVER_ERROR
     const message =
       (exception as any)?.response?.message ||
       (exception as myError)?.message ||
@@ -42,7 +43,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       .type('application/json')
       .send({
         ok: 0,
-        code: res?.code,
+        code: status,
         path: request.url,
         message: res?.message || (exception as any)?.message || '未知错误',
         timestamp: new Date().toISOString(),
