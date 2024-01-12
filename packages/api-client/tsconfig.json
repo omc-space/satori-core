@@ -1,22 +1,18 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "outDir": "./esm",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "baseUrl": ".",
-    "jsx": "react",
-    "target": "es2020",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleResolution": "node",
-    "strict": true,
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "strict": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "sourceMap": true,
     "paths": {
-      "~/*": ["*"],
-      "@core/*": ["../../apps/core/src/*"]
+      "~/*": ["./src/*"]
     }
   },
   "exclude": ["esm/*", "build/*", "node_modules/*", "lib/*", "dist/**"]
