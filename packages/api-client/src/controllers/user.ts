@@ -1,10 +1,14 @@
-import { IRequestAdapter } from '../interfaces/adapter'
-import { IController } from '../interfaces/controller'
-import { HTTPClient } from '../core/client'
+import type { IRequestAdapter } from '../interfaces/adapter'
+import type { IController } from '../interfaces/controller'
+import type { IRequestHandler } from '../interfaces/request'
+import type { TLogin, UserModel } from '../models/user'
+import type { HTTPClient } from '../core'
+
 import { autoBind } from '../utils/auto-bind'
 
 declare module '../core/client' {
   interface HTTPClient<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     T extends IRequestAdapter = IRequestAdapter,
     ResponseWrapper = unknown,
   > {
@@ -14,13 +18,46 @@ declare module '../core/client' {
 }
 
 export class UserController<ResponseWrapper> implements IController {
-  base = 'master'
-  name = ['user', 'master']
-
   constructor(private readonly client: HTTPClient) {
     autoBind(this)
   }
-  getMaster() {
-    return 'master'
+
+  base = 'master'
+
+  name = ['user', 'master']
+
+  public get proxy(): IRequestHandler<ResponseWrapper> {
+    return this.client.proxy(this.base)
+  }
+
+  getMasterInfo() {
+    return this.proxy.get<UserModel>()
+  }
+
+  login(username: string, password: string) {
+    return this.proxy.login.post<TLogin>({
+      data: {
+        username,
+        password,
+      },
+    })
+  }
+
+  loginWithToken(token?: string) {
+    return this.proxy.login.put<{ token: string }>({
+      params: token
+        ? {
+            token: `bearer ${token.replace(/^Bearer\s/i, '')}`,
+          }
+        : undefined,
+    })
+  }
+
+  checkTokenValid(token: string) {
+    return this.proxy.check_logged.get<{ ok: number; isGuest: boolean }>({
+      params: {
+        token: `bearer ${token.replace(/^Bearer\s/i, '')}`,
+      },
+    })
   }
 }

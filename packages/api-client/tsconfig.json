@@ -10,10 +10,7 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "skipLibCheck": true
   },
   "exclude": ["esm/*", "build/*", "node_modules/*", "lib/*", "dist/**"]
 }

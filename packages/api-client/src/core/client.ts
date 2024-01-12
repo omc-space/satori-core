@@ -1,33 +1,51 @@
-import { Class } from '../interfaces/types'
-import { allControllerNames, allControllers } from '../controllers'
-import { IRequestAdapter } from '../interfaces/adapter'
-import { IClientOptions } from '../interfaces/client'
-import { IController } from '../interfaces/controller'
+import type {
+  IAdaptorRequestResponseType,
+  IRequestAdapter,
+} from '../interfaces/adapter'
+import type { ClientOptions } from '../interfaces/client'
+import type { IController } from '../interfaces/controller'
+import type { RequestOptions } from '../interfaces/instance'
+import type { IRequestHandler, Method } from '../interfaces/request'
+import type { Class } from '../interfaces/types'
+
+import { isPlainObject } from '../utils'
+import { camelcaseKeys } from '../utils/camelcase-keys'
+import { resolveFullPath } from '../utils/path'
+
+import { allControllerNames } from '../controllers'
+import { attachRequestMethod } from './attach-request'
+import { RequestError } from './error'
+
 const methodPrefix = '_$'
-
 export type { HTTPClient }
-
 class HTTPClient<
   T extends IRequestAdapter = IRequestAdapter,
   ResponseWrapper = unknown,
 > {
-  constructor(
-    private _endpoint: string,
-    private _adaptor: T,
-    private options?: IClientOptions,
-  ) {
-    this.initGetClient()
-  }
+  private readonly _proxy: IRequestHandler<ResponseWrapper>
 
-  get instance() {
-    return this._adaptor
+  constructor(
+    private readonly _endpoint: string,
+    private _adaptor: T,
+    private options: Omit<ClientOptions, 'controllers'> = {},
+  ) {
+    this._endpoint = _endpoint
+      .replace(/\/*$/, '')
+      .replace('localhost', '127.0.0.1')
+    this._proxy = this.buildRoute(this)()
+    options.transformResponse =
+      options.transformResponse || ((data) => camelcaseKeys(data))
+
+    this.initGetClient()
+
+    attachRequestMethod(this)
   }
 
   private initGetClient() {
     for (const name of allControllerNames) {
       Object.defineProperty(this, name, {
         get() {
-          const client: any = Reflect.get(this, `${methodPrefix}${name}`)
+          const client = Reflect.get(this, `${methodPrefix}${name}`)
           if (!client) {
             throw new ReferenceError(
               `${
@@ -69,13 +87,175 @@ class HTTPClient<
       })
     }
   }
+
+  get endpoint() {
+    return this._endpoint
+  }
+
+  get instance() {
+    return this._adaptor
+  }
+
+  public request(options: {
+    url: string
+    method?: string
+    data?: any
+    params?: any
+  }) {
+    return (this as any)[`$$${String(options.method || 'get').toLowerCase()}`](
+      options.url,
+      options,
+    ) as Promise<IAdaptorRequestResponseType<any>>
+  }
+
+  public get proxy() {
+    return this._proxy
+  }
+
+  private buildRoute(manager: this): () => IRequestHandler<ResponseWrapper> {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const noop = () => {}
+    const methods = ['get', 'post', 'delete', 'patch', 'put']
+    const reflectors = [
+      'toString',
+      'valueOf',
+      'inspect',
+      'constructor',
+      Symbol.toPrimitive,
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this
+
+    return () => {
+      const route = ['']
+
+      const handler: any = {
+        get(target: any, name: Method) {
+          if (reflectors.includes(name))
+            return (withBase?: boolean) => {
+              if (withBase) {
+                const path = resolveFullPath(that.endpoint, route.join('/'))
+                route.length = 0
+                return path
+              } else {
+                const path = route.join('/')
+                route.length = 0
+                return path.startsWith('/') ? path : `/${path}`
+              }
+            }
+          if (methods.includes(name)) {
+            return async (options: RequestOptions) => {
+              const url = resolveFullPath(that.endpoint, route.join('/'))
+              route.length = 0
+              let res: Record<string, any> & { data: any }
+              try {
+                res = await manager.request({
+                  method: name,
+                  ...options,
+                  url,
+                })
+              } catch (e: any) {
+                let message = e.message
+                let code =
+                  e.code ||
+                  e.status ||
+                  e.statusCode ||
+                  e.response?.status ||
+                  e.response?.statusCode ||
+                  e.response?.code ||
+                  500
+
+                if (that.options.getCodeMessageFromException) {
+                  const errorInfo = that.options.getCodeMessageFromException(e)
+                  message = errorInfo.message || message
+                  code = errorInfo.code || code
+                }
+
+                throw that.options.customThrowResponseError
+                  ? that.options.customThrowResponseError(e)
+                  : new RequestError(message, code, url, e)
+              }
+
+              const data = res.data
+              if (!data) {
+                return null
+              }
+
+              const cameledObject =
+                (Array.isArray(data) || isPlainObject(data)) &&
+                that.options.transformResponse
+                  ? that.options.transformResponse(data)
+                  : data
+
+              let nextObject: any = cameledObject
+
+              if (cameledObject && typeof cameledObject === 'object') {
+                nextObject = { ...cameledObject }
+                Object.defineProperty(nextObject, '$raw', {
+                  get() {
+                    return res
+                  },
+                  enumerable: false,
+                  configurable: false,
+                })
+
+                // attach request config onto response
+                Object.defineProperty(nextObject, '$request', {
+                  get() {
+                    return {
+                      url,
+                      method: name,
+                      options,
+                    }
+                  },
+                  enumerable: false,
+                })
+
+                Object.defineProperty(nextObject, '$serialized', {
+                  get() {
+                    return cameledObject
+                  },
+                })
+              }
+
+              return nextObject
+            }
+          }
+          route.push(name)
+          return new Proxy(noop, handler)
+        },
+        // @ts-ignore
+        apply(target: any, _, args) {
+          route.push(...args.filter((x: string) => x !== null))
+          return new Proxy(noop, handler)
+        },
+      }
+
+      return new Proxy(noop, handler) as any
+    }
+  }
 }
-export function createClient<T extends IRequestAdapter = IRequestAdapter>(
-  adapter: T,
-  endpoint: string,
-  options?: IClientOptions,
-) {
-  const client = new HTTPClient(endpoint, adapter, options)
-  client.injectControllers(allControllers)
-  return client
+
+export function createClient<T extends IRequestAdapter>(adapter: T) {
+  return <
+    ResponseWrapper = T extends { responseWrapper: infer Type }
+      ? Type extends undefined
+        ? unknown
+        : Type
+      : unknown,
+  >(
+    endpoint: string,
+    options?: ClientOptions,
+  ) => {
+    const client = new HTTPClient<T, ResponseWrapper>(
+      endpoint,
+      adapter,
+      options,
+    )
+    const { controllers } = options || {}
+    if (controllers) {
+      client.injectControllers(controllers)
+    }
+    return client
+  }
 }
