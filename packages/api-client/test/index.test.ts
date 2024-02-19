@@ -5,8 +5,8 @@ import { NoteController } from 'src'
 
 describe('should', async () => {
   const client = createClient(fetchAdaptor)('http://127.0.0.1:2333',{controllers: [NoteController]})
-  const res = await client.note.getList()
-
+  const res = await client.post.getList()
+  res.data
   it('res', () => {
     expect(res).toMatchInlineSnapshot(`
       {

@@ -36,3 +36,18 @@ export const REDIS = {
   max: 120,
   disableApiCache: isDev,
 }
+
+export const CROSS_DOMAIN = {
+  allowedOrigins: [
+    'dvaren.xyz',
+    '*.dvaren.xyz',
+    'dvaren.xyz',
+    '*.dvaren.xyz',
+    'localhost:*',
+    '127.0.0.1',
+    '*.dev',
+    '*.vercel.app',
+  ],
+
+  // allowedReferer: 'innei.ren',
+}

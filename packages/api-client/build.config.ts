@@ -5,8 +5,8 @@ export default defineBuildConfig({
     'src/index',
     {
       builder: 'rollup',
-      input: './src/adaptors',
-      outDir: 'dist/adaptors/',
+      input: './src/adaptors/fetch',
+      outDir: 'dist/adaptors/fetch',
     },
   ],
   declaration: true,

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { createClient } from '../dist'
-import { fetchAdaptor } from '../dist/adaptors'
+import { fetchAdaptor } from '../dist/adaptors/fetch'
 import { NoteController } from 'src'
 
 describe('should', async () => {
   const client = createClient(fetchAdaptor)('http://127.0.0.1:2333',{controllers: [NoteController]})
   const res = await client.note.getList(1,10)
-
+  
   it('exported', () => {
     expect(res).toMatchInlineSnapshot(`
       {

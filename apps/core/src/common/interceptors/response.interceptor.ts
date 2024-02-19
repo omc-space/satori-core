@@ -1,60 +1,61 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common'
-import { Observable, map } from 'rxjs'
-import { ApiProperty } from '@nestjs/swagger'
-import { FastifyReply, FastifyRequest } from 'fastify'
+/**
+ * 对响应体进行转换结构
+ * @author Innei
+ */
+import { isArrayLike } from 'lodash'
+import { map } from 'rxjs/operators'
+import type {
+  CallHandler,
+  ExecutionContext,
+  NestInterceptor,
+} from '@nestjs/common'
+import type { Observable } from 'rxjs'
+
+import { Injectable } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+
+import { HTTP_RES_TRANSFORM_PAGINATE } from '~/constants/meta.constant'
+import * as SYSTEM from '~/constants/system.constant'
+import { transformDataToPaginate } from '~/transformers/paginate.transformer'
 
 export interface Response<T> {
   data: T
 }
 
-export class ApiResponse<T> {
-  @ApiProperty()
-  data: T
-  @ApiProperty({ example: 200 })
-  code: number
-
-  @ApiProperty()
-  timestamp: Date
-
-  @ApiProperty({ example: 'success' })
-  message?: string
-
-  constructor(data: T, code: number, message?: string) {
-    this.data = data
-    this.code = code
-    this.timestamp = new Date()
-    this.message = message
-  }
-}
-
+@Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
+  constructor(private readonly reflector: Reflector) {}
   intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
-    const request = context.switchToHttp().getRequest<FastifyRequest>()
-    if (!request) {
+    if (!context.switchToHttp().getRequest()) {
       return next.handle()
     }
-    //TODO: 跳过处理
-    // if (bypass) {
-    //   return next.handle()
-    // }
-    // const handler = context.getHandler().
+    const handler = context.getHandler()
+    const classType = context.getClass()
+
+    // 跳过 bypass 装饰的请求
+    const bypass = this.reflector.getAllAndOverride<boolean>(
+      SYSTEM.RESPONSE_PASSTHROUGH_METADATA,
+      [classType, handler],
+    )
+    if (bypass) {
+      return next.handle()
+    }
+
     return next.handle().pipe(
       map((data) => {
-        const response = context.switchToHttp().getResponse<FastifyReply>()
         if (typeof data === 'undefined') {
-          response.status(204)
+          context.switchToHttp().getResponse().status(204)
           return data
         }
         // 分页转换
-        // if (this.reflector.get(HTTP_RES_TRANSFORM_PAGINATE, handler)) {
-        //   return transformDataToPaginate(data)
-        // }
+        if (this.reflector.get(HTTP_RES_TRANSFORM_PAGINATE, handler)) {
+          return transformDataToPaginate(data)
+        }
 
-        // return isArrayLike(data) ? { data } : data
-        return new ApiResponse(data, response.statusCode, 'success')
+        return isArrayLike(data) ? { data } : data
       }),
     )
   }
