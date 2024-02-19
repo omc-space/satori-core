@@ -29,6 +29,6 @@ async function bootstrap() {
     }),
   )
   registerJSONGlobal()
-  await app.listen(3000)
+  await app.listen(2333)
 }
 bootstrap()

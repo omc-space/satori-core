@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { createClient } from '../src/core/client'
-import { fetchAdaptor } from '../src/adaptors/fetch'
+import { createClient } from '../dist'
+import { fetchAdaptor } from '../dist/adaptors'
 import { NoteController } from 'src'
 
 describe('should', async () => {
   const client = createClient(fetchAdaptor)('http://127.0.0.1:2333',{controllers: [NoteController]})
-  const res = await client.note.getList()
+  const res = await client.note.getList(1,10)
 
-  it('res', () => {
+  it('exported', () => {
     expect(res).toMatchInlineSnapshot(`
       {
         "code": 200,
@@ -62,7 +62,7 @@ describe('should', async () => {
           "totalPages": 1,
         },
         "message": "success",
-        "timestamp": "2024-02-19T00:24:35.612Z",
+        "timestamp": "2024-02-19T00:54:05.647Z",
       }
     `)
   })
