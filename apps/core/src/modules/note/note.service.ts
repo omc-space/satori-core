@@ -74,7 +74,7 @@ export class NoteService {
       throw new NoContentCanBeModifiedException()
     }
 
-    this.noteModel.deleteOne({ _id: id })
+    await this.noteModel.deleteOne({ _id: id })
   }
 
   async getIdByNid(nid: number) {
@@ -95,7 +95,7 @@ export class NoteService {
       return this.model.findOne({ _id: id })
     }
 
-    return this.model.findById(unique)
+    return await this.model.findById(unique)
   }
 
   public readonly publicNoteQueryCondition = {

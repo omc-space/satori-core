@@ -7,7 +7,7 @@ import { AuthService } from '../auth/auth.service'
 import { IpLocation } from '~/common/decorators/ip.decorator'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@ApiController('user')
+@ApiController(['user', 'master'])
 @ApiTags('用户模块')
 export class UserController {
   constructor(
@@ -45,7 +45,7 @@ export class UserController {
     }
   }
 
-  @Get('master')
+  @Get('/')
   async masterInfo() {
     return await this.userService.getMasterInfo()
   }

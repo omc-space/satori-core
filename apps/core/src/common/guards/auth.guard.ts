@@ -15,8 +15,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>()
-    const token = request.headers[TOKEN_FIELD_NAME].toString()
-
+    const token = request.headers[TOKEN_FIELD_NAME] as string
     if (!token) {
       throw new UnauthorizedException('未登录')
     }

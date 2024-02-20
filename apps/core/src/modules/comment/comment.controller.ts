@@ -6,7 +6,7 @@ import { MongoIdDto } from '~/shared/dto/id.dto'
 import { IsMaster } from '~/common/decorators/role.decorator'
 import { CommentModel, CommentState } from './comment.model'
 import { CannotFindException } from '~/common/exceptions/cant-find.exception'
-import { HTTPDecorators } from '~/common/decorators/http.decorator'
+import { HTTPDecorators, Paginator } from '~/common/decorators/http.decorator'
 import { FilterQuery, Document } from 'mongoose'
 import type { DocumentType } from '@typegoose/typegoose'
 import { IpLocation, IpRecord } from '~/common/decorators/ip.decorator'
@@ -33,6 +33,7 @@ export class CommentController {
 
   @Get('/')
   @Auth()
+  @Paginator
   async getRecentlyComments(@Query() query: PagerDto) {
     const { size = 10, page = 1, state = 0 } = query
     return await this.commentService.getComments({ size, page, state })

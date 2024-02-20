@@ -89,6 +89,8 @@ export class PostModel extends WriteBaseModel {
     if (isDateIsoString) {
       return new Date(value)
     }
+    if (value === 'true') value = true
+    else if (value === 'false') value = false
     if (typeof value != 'boolean') {
       throw new UnprocessableEntityException('pin value must be boolean')
     }

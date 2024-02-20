@@ -23,7 +23,7 @@ import { CategoryModel } from '../category/category.model'
 import { CategoryAndSlugDto } from './post.dto'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
 
-@ApiController('post')
+@ApiController('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
@@ -53,6 +53,7 @@ export class PostController {
                     else: '$$REMOVE',
                   },
                 },
+                id: '$_id',
               },
             },
             {
@@ -116,7 +117,6 @@ export class PostController {
   }
 
   @Get('/:id')
-  @Auth()
   async getById(@Param() params: MongoIdDto) {
     const { id } = params
     const doc = await this.postService.model

@@ -6,7 +6,6 @@ import { NoteController } from 'src'
 describe('should', async () => {
   const client = createClient(fetchAdaptor)('http://127.0.0.1:2333',{controllers: [NoteController]})
   const res = await client.note.getList(1,10)
-  
   it('exported', () => {
     expect(res).toMatchInlineSnapshot(`
       {
