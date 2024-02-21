@@ -1,4 +1,13 @@
-import { Body, Get, Param, Post, Query, Req, Patch } from '@nestjs/common'
+import {
+  Body,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  Patch,
+  Delete,
+} from '@nestjs/common'
 import { CommentService } from './comment.service'
 import { PagerDto } from '~/shared/dto/pager.dto'
 import { Auth } from '~/common/decorators/auth.decorator'
@@ -348,5 +357,11 @@ export class CommentController {
     } catch {
       throw new NoContentCanBeModifiedException()
     }
+  }
+
+  @Delete('/:id')
+  @Auth()
+  async deleteComment(@Param('id') id: string) {
+    return await this.commentService.deleteComments(id)
   }
 }

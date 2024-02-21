@@ -21,6 +21,7 @@ import { SayModule } from './modules/say/say.module'
 import { RedisModule } from './modules/redis/redis.module'
 import { OptionModule } from './modules/option/option.module'
 import { HelperModule } from './shared/helper/helper.module'
+import { LinkModule } from './modules/link/link.module'
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { HelperModule } from './shared/helper/helper.module'
     RedisModule,
     OptionModule,
     HelperModule,
+    LinkModule,
   ],
   controllers: [AppController],
   providers: [

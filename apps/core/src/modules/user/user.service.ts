@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { UserDto } from './user.dto'
+import { UserDto, UserOptionDto } from './user.dto'
 import { UserModel as User } from './user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { sleep } from '~/utils/tools.util'
@@ -81,5 +81,15 @@ export class UserService {
 
   async getMaster() {
     return await this.userModel.findOne().lean()
+  }
+
+  async updateMaster(isMaster: boolean, masterOption: UserOptionDto) {
+    if (!isMaster) throw new BadRequestException('您不是主人')
+    return await this.userModel.findOneAndUpdate(masterOption)
+  }
+
+  async changePassword(isMaster: boolean, password: string) {
+    if (!isMaster) throw new BadRequestException('您不是主人')
+    return await this.userModel.findOneAndUpdate({ password })
   }
 }

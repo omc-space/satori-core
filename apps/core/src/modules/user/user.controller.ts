@@ -1,11 +1,13 @@
-import { Body, Get, HttpCode, Post } from '@nestjs/common'
+import { Body, Get, HttpCode, Patch, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
-import { LoginDto, UserDto } from './user.dto'
+import { LoginDto, UserDto, UserOptionDto } from './user.dto'
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from '../auth/auth.service'
 import { IpLocation } from '~/common/decorators/ip.decorator'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
+import { Auth } from '~/common/decorators/auth.decorator'
+import { IsMaster } from '~/common/decorators/role.decorator'
 
 @ApiController(['user', 'master'])
 @ApiTags('用户模块')
@@ -48,5 +50,23 @@ export class UserController {
   @Get('/')
   async masterInfo() {
     return await this.userService.getMasterInfo()
+  }
+
+  @Put('/')
+  @Auth()
+  async updateMasterInfo(
+    @IsMaster() isMaster: boolean,
+    @Body() userDto: UserOptionDto,
+  ) {
+    return await this.userService.updateMaster(isMaster, userDto)
+  }
+
+  @Patch('/')
+  @Auth()
+  async changePassword(
+    @IsMaster() isMaster: boolean,
+    @Body('password') password: string,
+  ) {
+    return await this.userService.changePassword(isMaster, password)
   }
 }

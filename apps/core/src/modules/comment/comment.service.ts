@@ -160,7 +160,6 @@ export class CommentService {
     if (!comment) {
       throw new NoContentCanBeModifiedException()
     }
-
     const { children, parent } = comment
     if (children && children.length > 0) {
       await Promise.all(

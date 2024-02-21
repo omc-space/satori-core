@@ -7,7 +7,7 @@ import {
   IsUrl,
 } from 'class-validator'
 
-class UserOptionDto {
+export class UserOptionDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()

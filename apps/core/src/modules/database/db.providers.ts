@@ -9,6 +9,7 @@ import { UserModel } from '~/modules/user/user.model'
 import { SayModel } from '../say/say.model'
 import { CommentModel } from '../comment/comment.model'
 import { OptionModel } from '../configs/configs.model'
+import { LinkModel } from '../link/link.model'
 
 export const dbProviders: Provider[] = [
   UserModel,
@@ -19,6 +20,7 @@ export const dbProviders: Provider[] = [
   SayModel,
   CommentModel,
   OptionModel,
+  LinkModel,
 ].map((model) => ({
   provide: getModelToken(model.name),
   useFactory: () => getModelForClass(model),
