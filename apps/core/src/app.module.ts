@@ -22,6 +22,7 @@ import { RedisModule } from './modules/redis/redis.module'
 import { OptionModule } from './modules/option/option.module'
 import { HelperModule } from './shared/helper/helper.module'
 import { LinkModule } from './modules/link/link.module'
+import { ImageModule } from './modules/image/image.module'
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { LinkModule } from './modules/link/link.module'
     OptionModule,
     HelperModule,
     LinkModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [
