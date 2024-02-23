@@ -171,4 +171,19 @@ export class NoteService {
 
     return isSecret
   }
+
+  checkPasswordToAccess<T extends NoteModel>(
+    doc: T,
+    password?: string,
+  ): boolean {
+    const hasPassword = doc.password
+    if (!hasPassword) {
+      return true
+    }
+    if (!password) {
+      return false
+    }
+    const isValid = Object.is(password, doc.password)
+    return isValid
+  }
 }
