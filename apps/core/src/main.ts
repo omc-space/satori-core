@@ -39,6 +39,10 @@ async function bootstrap() {
       : Origin
         ? {
             origin: (origin, callback) => {
+              // 浏览器直接访问时为undefined
+              if (!origin) {
+                return callback(null, true)
+              }
               let currentHost: string
               try {
                 currentHost = new URL(origin).host
