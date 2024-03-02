@@ -153,7 +153,7 @@ export class NoteService {
       .sort({
         created: -1,
       })
-      .select('nid _id')
+      .select('nid _id title')
       .lean()
 
     return {
