@@ -23,6 +23,7 @@ import { OptionModule } from './modules/option/option.module'
 import { HelperModule } from './shared/helper/helper.module'
 import { LinkModule } from './modules/link/link.module'
 import { ImageModule } from './modules/image/image.module'
+import { SystemModule } from './modules/system/system.module'
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ImageModule } from './modules/image/image.module'
     HelperModule,
     LinkModule,
     ImageModule,
+    SystemModule,
   ],
   controllers: [AppController],
   providers: [

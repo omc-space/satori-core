@@ -11,6 +11,7 @@ export const COMMENT_COLLECTION_NAME = 'comments'
 export const TOPIC_COLLECTION_NAME = 'topics'
 // export const PAGE_COLLECTION_NAME = 'pages'
 // export const RECENTLY_COLLECTION_NAME = 'recentlies'
+export const SYSTEM_COLLECTION_NAME = 'system'
 
 export enum CollectionRefTypes {
   Post = POST_COLLECTION_NAME,

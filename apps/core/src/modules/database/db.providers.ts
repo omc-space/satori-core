@@ -11,6 +11,7 @@ import { CommentModel } from '../comment/comment.model'
 import { OptionModel } from '../configs/configs.model'
 import { LinkModel } from '../link/link.model'
 import { ImageModel } from '../image/image.model'
+import { SystemModel } from '../system/system.model'
 
 export const dbProviders: Provider[] = [
   UserModel,
@@ -23,6 +24,7 @@ export const dbProviders: Provider[] = [
   OptionModel,
   LinkModel,
   ImageModel,
+  SystemModel,
 ].map((model) => ({
   provide: getModelToken(model.name),
   useFactory: () => getModelForClass(model),
