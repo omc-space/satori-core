@@ -23,7 +23,8 @@ export class CategoryService {
     return this.categoryModel
   }
 
-  async create(name: string, slug: string) {
+  async create(category: CategoryModel) {
+    const { name, slug } = category
     // 检查slug是否已存在
     const slugExists = await this.categoryModel.exists({
       name,
@@ -32,7 +33,8 @@ export class CategoryService {
     if (slugExists) {
       throw new BadRequestException('分类slug已存在')
     }
-    return await this.categoryModel.create({ name, slug: slug ?? name })
+    category.slug = slug ?? name
+    return await this.categoryModel.create(category)
   }
 
   async update(id: string, categoryDto: Partial<CategoryModel>) {

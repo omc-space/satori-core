@@ -157,7 +157,6 @@ export class PostController {
     @IpLocation() { ip }: IpRecord,
   ) {
     const { category, slug } = params
-
     const categoryDocument = await this.postService.getCategoryBySlug(category)
     if (!categoryDocument) {
       throw new NotFoundException('该分类未找到 (｡•́︿•̀｡)')

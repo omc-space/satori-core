@@ -21,6 +21,7 @@ export class CategoryModel extends BaseModel {
   @IsOptional()
   type: CategoryType
 
+  @prop()
   @IsString()
   @IsOptional()
   slug?: string
