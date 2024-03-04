@@ -1,4 +1,13 @@
-import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { CategoryService } from './category.service'
 import { CategoryModel, CategoryType } from './category.model'
 import { HTTPDecorators } from '~/common/decorators/http.decorator'
@@ -7,6 +16,9 @@ import { MultiCategoriesQueryDto } from './category.dto'
 import { PostService } from '../post/post.service'
 import { Auth } from '~/common/decorators/auth.decorator'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
+import { MultiQueryTagAndCategoryDto, SlugOrIdDto } from '../post/post.dto'
+import { isValidObjectId } from 'mongoose'
+import { CannotFindException } from '~/common/exceptions/cant-find.exception'
 
 @ApiController('categories')
 export class CategoryController {
@@ -84,5 +96,42 @@ export class CategoryController {
   async delete(@Param() params: MongoIdDto) {
     const { id } = params
     return await this.categoryService.deleteById(id)
+  }
+
+  @Get('/:query')
+  async getCategoryById(
+    @Param() { query }: SlugOrIdDto,
+    @Query() { tag }: MultiQueryTagAndCategoryDto,
+  ) {
+    if (!query) {
+      throw new BadRequestException()
+    }
+    if (tag === true) {
+      return {
+        tag: query,
+        data: await this.categoryService.findArticleWithTag(query),
+      }
+    }
+
+    const isId = isValidObjectId(query)
+    const res = isId
+      ? await this.categoryService.model
+          .findById(query)
+          .sort({ created: -1 })
+          .lean()
+      : await this.categoryService.model
+          .findOne({ slug: query })
+          .sort({ created: -1 })
+          .lean()
+
+    if (!res) {
+      throw new CannotFindException()
+    }
+
+    const children =
+      (await this.categoryService.findCategoryPost(res._id.toHexString(), {
+        $and: [tag ? { tags: tag } : {}],
+      })) || []
+    return { data: { ...res, children } }
   }
 }

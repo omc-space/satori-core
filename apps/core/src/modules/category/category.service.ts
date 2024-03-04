@@ -9,6 +9,11 @@ import { InjectModel } from '~/common/decorators/inject.model.decorator'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { NoContentCanBeModifiedException } from '~/common/exceptions/no-content-canbe-modified.exception'
 import { PostService } from '../post/post.service'
+import { FilterQuery } from 'mongoose'
+import { PostModel } from '../post/post.model'
+import { CannotFindException } from '~/common/exceptions/cant-find.exception'
+import { omit } from 'lodash'
+import type { DocumentType } from '@typegoose/typegoose'
 
 @Injectable()
 export class CategoryService {
@@ -128,5 +133,41 @@ export class CategoryService {
         slug: 'default',
       })
     }
+  }
+
+  async findCategoryPost(categoryId: string, condition: any = {}) {
+    return await this.postService.model
+      .find({
+        categoryId,
+        ...condition,
+      })
+      .select('title created slug _id')
+      .sort({ created: -1 })
+  }
+
+  async findArticleWithTag(
+    tag: string,
+    condition: FilterQuery<DocumentType<PostModel>> = {},
+  ): Promise<null | any[]> {
+    const posts = await this.postService.model
+      .find(
+        {
+          tags: tag,
+          ...condition,
+        },
+        undefined,
+        { lean: true },
+      )
+      .populate('category')
+    if (!posts.length) {
+      throw new CannotFindException()
+    }
+    return posts.map(({ _id, title, slug, category, created }) => ({
+      _id,
+      title,
+      slug,
+      category: omit(category, ['count', '__v', 'created', 'modified']),
+      created,
+    }))
   }
 }
