@@ -10,6 +10,7 @@ import { ReturnModelType } from '@typegoose/typegoose'
 import { FilterQuery } from 'mongoose'
 import type { DocumentType } from '@typegoose/typegoose'
 import dayjs from 'dayjs'
+import { CannotFindException } from '~/common/exceptions/cant-find.exception'
 
 @Injectable()
 export class NoteService {
@@ -185,5 +186,21 @@ export class NoteService {
     }
     const isValid = Object.is(password, doc.password)
     return isValid
+  }
+
+  async getLatestNoteId() {
+    const note = await this.noteModel
+      .findOne()
+      .sort({
+        created: -1,
+      })
+      .lean()
+    if (!note) {
+      throw new CannotFindException()
+    }
+    return {
+      nid: note.nid,
+      id: note.id,
+    }
   }
 }

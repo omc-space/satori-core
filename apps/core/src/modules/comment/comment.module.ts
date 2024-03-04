@@ -7,5 +7,6 @@ import { UserModule } from '../user/user.module'
   imports: [UserModule],
   controllers: [CommentController],
   providers: [CommentService],
+  exports: [CommentService],
 })
 export class CommentModule {}

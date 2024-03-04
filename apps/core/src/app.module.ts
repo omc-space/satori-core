@@ -24,6 +24,7 @@ import { HelperModule } from './shared/helper/helper.module'
 import { LinkModule } from './modules/link/link.module'
 import { ImageModule } from './modules/image/image.module'
 import { SystemModule } from './modules/system/system.module'
+import { AggregateModule } from './modules/aggregate/aggregate.module'
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { SystemModule } from './modules/system/system.module'
     LinkModule,
     ImageModule,
     SystemModule,
+    AggregateModule,
   ],
   controllers: [AppController],
   providers: [
