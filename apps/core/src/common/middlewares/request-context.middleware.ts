@@ -12,7 +12,10 @@ import { RequestContext } from '../contexts/request.context'
 export class RequestContextMiddleware implements NestMiddleware {
   use(req: IncomingMessage, res: ServerResponse, next: () => any) {
     const requestContext = new RequestContext(req, res)
-
+    if (req.method === 'OPTIONS') {
+      next()
+      return
+    }
     const session =
       cls.getNamespace(RequestContext.name) ||
       cls.createNamespace(RequestContext.name)

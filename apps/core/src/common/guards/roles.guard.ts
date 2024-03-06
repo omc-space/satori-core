@@ -19,7 +19,7 @@ export class RolesGuard extends AuthGuard implements CanActivate {
 
     protected readonly userService: UserService,
   ) {
-    super(authService)
+    super(authService, userService)
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = this.getRequest(context)

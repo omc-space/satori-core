@@ -25,6 +25,7 @@ import { LinkModule } from './modules/link/link.module'
 import { ImageModule } from './modules/image/image.module'
 import { SystemModule } from './modules/system/system.module'
 import { AggregateModule } from './modules/aggregate/aggregate.module'
+import { LogModule } from './modules/log/log.module'
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { AggregateModule } from './modules/aggregate/aggregate.module'
     ImageModule,
     SystemModule,
     AggregateModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [

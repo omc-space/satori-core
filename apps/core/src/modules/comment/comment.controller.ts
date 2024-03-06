@@ -287,12 +287,12 @@ export class CommentController {
     errorMessage: idempotenceMessage,
   })
   async replyByMaster(
-    @Req() req: any,
+    @CurrentUser() user: UserModel,
     @Param() params: MongoIdDto,
     @Body() body: TextOnlyDto,
     @IpLocation() ipLocation: IpRecord,
   ) {
-    const { name, mail, url } = req.user
+    const { name, mail, url } = user
     const model: CommentDto = {
       author: name,
       ...body,
@@ -363,5 +363,16 @@ export class CommentController {
   @Auth()
   async deleteComment(@Param('id') id: string) {
     return await this.commentService.deleteComments(id)
+  }
+
+  @Delete('/deletemany')
+  @Auth()
+  async deleteComments(@Body('ids') ids: string[]) {
+    if (Array.isArray(ids)) {
+      ids.forEach(async (id) => {
+        await this.commentService.deleteComments(id)
+      })
+    }
+    return 'success'
   }
 }

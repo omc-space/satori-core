@@ -32,7 +32,7 @@ export class UserController {
     const footstep = await this.userService.recordFootstep(id)
     return {
       token: await this.authService.generateToken({
-        id: id,
+        ...user,
         ip: ipLocation.ip,
         ua: ipLocation.agent,
       }),
@@ -48,8 +48,12 @@ export class UserController {
   }
 
   @Get('/')
-  async masterInfo() {
-    return await this.userService.getMasterInfo()
+  async masterInfo(@IsMaster() isMaster: boolean) {
+    const master = await this.userService.getMasterInfo()
+    return {
+      ...master,
+      isMaster,
+    }
   }
 
   @Put('/')

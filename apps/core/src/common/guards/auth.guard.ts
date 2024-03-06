@@ -8,10 +8,16 @@ import { Request } from 'express'
 import { FastifyRequest } from 'fastify'
 import { TOKEN_FIELD_NAME } from '~/constants/system.constant'
 import { AuthService } from '~/modules/auth/auth.service'
+import { UserModel } from '~/modules/user/user.model'
+import { UserService } from '~/modules/user/user.service'
+import { FastifyBizRequest } from '~/transformers/get-req.transformer'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(protected authService: AuthService) {}
+  constructor(
+    protected authService: AuthService,
+    protected readonly userService: UserService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>()
@@ -20,8 +26,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('未登录')
     }
 
-    const payload = await this.authService.verifyToken(token)
-    request['user'] = payload
+    await this.authService.verifyToken(token)
+    this.attachUserAndToken(request, await this.userService.getMaster(), token)
 
     return true
   }
@@ -29,5 +35,19 @@ export class AuthGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? []
     return type === 'Bearer' ? token : undefined
+  }
+
+  attachUserAndToken(
+    request: FastifyBizRequest,
+    user: UserModel,
+    token: string,
+  ) {
+    request.user = user
+    request.token = token
+
+    Object.assign(request.raw, {
+      user,
+      token,
+    })
   }
 }

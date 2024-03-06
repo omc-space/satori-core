@@ -51,3 +51,13 @@ export const CROSS_DOMAIN = {
 
   // allowedReferer: 'innei.ren',
 }
+
+export const CLUSTER = {
+  enable: false,
+  workers: 'cluster_workers',
+}
+
+export const SECURITY = {
+  jwtSecret: 'cnasnodcnoncqsca2239',
+  jwtExpire: 14,
+}

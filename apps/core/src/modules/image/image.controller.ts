@@ -31,7 +31,7 @@ export class ImageController extends BaseCrudFactory({ model: ImageModel }) {
   }
 
   @Delete('/deletemany')
-  deleteMany(@Body() ids: string[]) {
+  deleteMany(@Body('ids') ids: string[]) {
     if (ids.length === 0) throw new BadRequestException('id不能为空')
     return this._model.deleteMany({ _id: { $in: ids } })
   }
