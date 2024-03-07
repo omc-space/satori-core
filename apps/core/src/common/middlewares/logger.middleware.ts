@@ -3,7 +3,7 @@ import type { FastifyRequest, FastifyReply } from 'fastify'
 import { TOKEN_FIELD_NAME } from '~/constants/system.constant'
 import { AuthService } from '~/modules/auth/auth.service'
 import { LogService } from '~/modules/log/log.service'
-import { getIp } from '~/utils'
+import { getClientIp } from 'request-ip'
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -20,10 +20,9 @@ export class LoggerMiddleware implements NestMiddleware {
       next()
       return
     }
-    const ip = getIp(req)
+    const ip = getClientIp(req)
     const ua =
       req.headers['user-agent'] || (req.headers['User-Agent'] as string)
-
     this.authService
       .verifyToken(req.headers[TOKEN_FIELD_NAME] as string)
       .catch(() => {

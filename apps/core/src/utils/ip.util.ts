@@ -1,11 +1,8 @@
-import { URL } from 'url'
-
 import type { FastifyRequest } from 'fastify'
 import type { IncomingMessage } from 'http'
 
 export const getIp = (request: FastifyRequest | IncomingMessage) => {
   const req = request as any
-
   let ip: string =
     request.headers['x-forwarded-for'] ||
     request.headers['X-Forwarded-For'] ||
@@ -19,11 +16,4 @@ export const getIp = (request: FastifyRequest | IncomingMessage) => {
     ip = ip.split(',')[0]
   }
   return ip
-}
-
-export const parseRelativeUrl = (path: string) => {
-  if (!path || !path.startsWith('/')) {
-    return new URL('http://a.com')
-  }
-  return new URL(`http://a.com${path}`)
 }
