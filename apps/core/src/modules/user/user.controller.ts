@@ -29,7 +29,7 @@ export class UserController {
   async login(@Body() dto: LoginDto, @IpLocation() ipLocation) {
     const user = await this.userService.login(dto.username, dto.password)
     const { name, username, created, url, mail, avatar, id } = user
-    const footstep = await this.userService.recordFootstep(id)
+    const footstep = await this.userService.recordFootstep(ipLocation.ip)
     return {
       token: await this.authService.generateToken({
         ...user,
@@ -49,7 +49,7 @@ export class UserController {
 
   @Get('/')
   async masterInfo(@IsMaster() isMaster: boolean) {
-    const master = await this.userService.getMasterInfo()
+    const master = await this.userService.getMasterInfo(isMaster)
     return {
       ...master,
       isMaster,

@@ -48,8 +48,9 @@ export class UserService {
     return user
   }
 
-  async getMasterInfo() {
-    const master = await this.userModel.findOne().lean()
+  async getMasterInfo(isMaster?: boolean) {
+    const select = isMaster ? '+lastLoginIp' : ''
+    const master = await this.userModel.findOne().select(select).lean()
     if (!master) {
       throw new BadRequestException('还没有主人呢')
     }
