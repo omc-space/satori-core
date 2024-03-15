@@ -52,23 +52,26 @@ export async function getAverageRGB(
 }
 
 export async function getOnlineImageSizeAndMeta(url: string) {
-  const { data, headers } = await axios.get(url, {
-    responseType: 'arraybuffer',
-    headers: {
-      'user-agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-    },
-  })
+  try {
+    const { data, headers } = await axios.get(url, {
+      responseType: 'arraybuffer',
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+      },
+    })
 
-  const imageType = headers['content-type']!
+    const imageType = headers['content-type']!
 
-  const buffer = Buffer.from(data)
-  const size = imageSize(buffer)
+    const buffer = Buffer.from(data)
+    const size = imageSize(buffer)
 
-  // get accent color
-  const accent = await getAverageRGB(buffer, imageType)
-
-  return { size, accent }
+    // get accent color
+    const accent = await getAverageRGB(buffer, imageType)
+    return { size, accent }
+  } catch (err) {
+    return null
+  }
 }
 
 function setsAreEqual(a, b) {
@@ -104,13 +107,16 @@ export async function getImageMetaFromMd(
     const imageSize = getImageSizeFromUrl(url)
     if (!imageSize) {
       const res = await getOnlineImageSizeAndMeta(url)
-      image.width = res.size.width
-      image.height = res.size.height
-      image.accent = res.accent
+      if (res) {
+        image.width = res.size.width
+        image.height = res.size.height
+        image.accent = res.accent
+      }
+    } else {
+      image.width = imageSize.width
+      image.height = imageSize.height
+      images.push(image)
     }
-    image.width = imageSize.width
-    image.height = imageSize.height
-    images.push(image)
   }
   return images
 }
