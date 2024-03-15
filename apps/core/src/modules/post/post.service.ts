@@ -18,6 +18,7 @@ import { omit } from 'lodash'
 import type { AggregatePaginateModel, Document, Types } from 'mongoose'
 import { CommentModel } from '../comment/comment.model'
 import { CollectionRefTypes } from '~/constants/db.constant'
+import { getImageMetaFromMd } from '~/utils/pic.util'
 
 @Injectable()
 export class PostService {
@@ -59,10 +60,13 @@ export class PostService {
 
     const relatedIds = await this.checkRelated(post)
     post.related = relatedIds as any
+
+    const images = await getImageMetaFromMd(post.text)
     const newPost = await this.postModel.create({
       ...post,
       slug,
       modified: null,
+      images,
       created: getLessThanNow(post.created),
     })
 
@@ -113,7 +117,8 @@ export class PostService {
       await this.removeRelatedEachOther(oldPost)
       oldPost.related = []
     }
-
+    if (post.text)
+      oldPost.images = await getImageMetaFromMd(post.text, oldPost.images)
     Object.assign(
       oldPost,
       omit(post, PostModel.protectedKeys),

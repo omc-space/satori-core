@@ -11,6 +11,7 @@ import { FilterQuery } from 'mongoose'
 import type { DocumentType } from '@typegoose/typegoose'
 import dayjs from 'dayjs'
 import { CannotFindException } from '~/common/exceptions/cant-find.exception'
+import { getImageMetaFromMd } from '~/utils/pic.util'
 
 @Injectable()
 export class NoteService {
@@ -25,13 +26,19 @@ export class NoteService {
 
   async create(document: NoteModel) {
     document.created = getLessThanNow(document.created)
-
+    document.images =
+      document.images ?? (await getImageMetaFromMd(document.text))
     const note = await this.noteModel.create(document)
 
     return note
   }
 
   async updateById(id: string, data: Partial<NoteModel>) {
+    if (data.text) {
+      const oldNote = await this.noteModel.findById(id)
+      data.images = await getImageMetaFromMd(data.text, oldNote.images)
+    }
+
     const updatedData = Object.assign(
       {},
       omit(data, NoteModel.protectedKeys),
@@ -45,7 +52,6 @@ export class NoteService {
     if (['title', 'text'].some((key) => isDefined(key))) {
       data.modified = new Date()
     }
-
     const updated = await this.noteModel
       .findByIdAndUpdate(
         {
