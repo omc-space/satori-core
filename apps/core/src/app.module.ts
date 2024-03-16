@@ -29,7 +29,9 @@ import { LogModule } from './modules/log/log.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     DbModule.forRoot(),
     DbModule.forFeature(),
     AuthModule,

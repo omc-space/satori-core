@@ -1,19 +1,17 @@
 import { AxiosRequestConfig } from 'axios'
 
 export const MONGO_DB = {
-  dbName: 'satori',
-  host: '127.0.0.1',
-  // host: argv.db_host || '10.0.0.33',
-  port: 27017,
-  user: '',
-  password: '',
+  dbName: process.env.collection_name || 'satori',
+  host: process.env.DATABASE_HOST || '127.0.0.1',
+  port: process.env.DATABASE_PORT || 27017,
+  user: process.env.DATABASE_USER || '',
+  password: process.env.DATABASE_PASSWORD || '',
   get uri() {
     const userPassword =
       this.user && this.password ? `${this.user}:${this.password}@` : ''
     return `mongodb://${userPassword}${this.host}:${this.port}/${this.dbName}`
   },
 }
-
 export const API_VERSION = 1
 
 export const AXIOS_CONFIG: AxiosRequestConfig = {

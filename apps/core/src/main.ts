@@ -59,6 +59,7 @@ async function bootstrap() {
           }
         : undefined,
   )
+
   registerJSONGlobal()
   await app.listen(2333)
 }
