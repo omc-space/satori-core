@@ -222,7 +222,6 @@ export class AggregateService {
     const dateFormat = getShortDate(new Date())
 
     const [
-      online,
       posts,
       notes,
       says,
@@ -235,7 +234,6 @@ export class AggregateService {
     ] = await Promise.all([
       this.postService.model.countDocuments(),
       this.noteService.model.countDocuments(),
-      this.categoryService.model.countDocuments(),
       this.sayService.model.countDocuments(),
       this.commentService.model.countDocuments({
         parent: null,
@@ -253,7 +251,7 @@ export class AggregateService {
       this.linkService.model.countDocuments({
         state: LinkState.Audit,
       }),
-      this.categoryService.model.countDocuments({}),
+      this.categoryService.model.countDocuments(),
     ])
 
     const [todayMaxOnline, todayOnlineTotal] = await Promise.all([
@@ -274,7 +272,6 @@ export class AggregateService {
       posts,
       says,
       unreadComments,
-      online,
       todayMaxOnline: todayMaxOnline || 0,
       todayOnlineTotal: todayOnlineTotal || 0,
     }
