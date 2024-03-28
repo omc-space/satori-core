@@ -65,4 +65,10 @@ export class SystemBaseController {
     })
     return null
   }
+
+  @Get('/theme')
+  async getTheme() {
+    const themes = await this.systemService.getThemeColor()
+    return themes
+  }
 }
