@@ -47,6 +47,9 @@ export class CacheService {
   public set(key: TCacheKey, value: any, milliseconds: number) {
     return this.cache.set(key, value, milliseconds)
   }
+  public del(key: TCacheKey) {
+    return this.cache.del(key)
+  }
 
   public getClient() {
     return this.redisClient

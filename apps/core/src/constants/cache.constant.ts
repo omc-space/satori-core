@@ -29,3 +29,5 @@ export enum CacheKeys {
   RSS = `${API_CACHE_PREFIX}rss`,
   RSSXml = `${API_CACHE_PREFIX}rss_xml`,
 }
+
+export const likeAndReadCacheTTL = 24 * 60 * 60 * 1000 // 1天

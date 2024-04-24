@@ -22,10 +22,14 @@ import { IpLocation, IpRecord } from '~/common/decorators/ip.decorator'
 import { CategoryModel } from '../category/category.model'
 import { CategoryAndSlugDto } from './post.dto'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
+import { CountService } from '../count/count.service'
 
 @ApiController('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly countService: CountService,
+  ) {}
 
   @Get('/')
   @Paginator
@@ -117,7 +121,7 @@ export class PostController {
   }
 
   @Get('/:id')
-  async getById(@Param() params: MongoIdDto) {
+  async getById(@Param() params: MongoIdDto, @IpLocation() { ip }: IpRecord) {
     const { id } = params
     const doc = await this.postService.model
       .findById(id)
@@ -126,11 +130,17 @@ export class PostController {
         path: 'related',
         select: 'title slug id _id categoryId category',
       })
+      .lean()
     if (!doc) {
       throw new CannotFindException()
     }
+    const liked = await this.countService.isLiked(id, 'post', ip)
+    this.countService.recordRead(doc.id, 'post', ip)
 
-    return doc
+    return {
+      ...doc,
+      liked,
+    }
   }
 
   @Get('/latest')
@@ -142,6 +152,7 @@ export class PostController {
     if (!last) {
       throw new CannotFindException()
     }
+    this.countService.recordRead(last.id, 'note', ip.ip)
     return this.getByCateAndSlug(
       {
         category: (last.category as CategoryModel).slug,

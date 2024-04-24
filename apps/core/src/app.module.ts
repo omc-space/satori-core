@@ -26,6 +26,7 @@ import { ImageModule } from './modules/image/image.module'
 import { SystemModule } from './modules/system/system.module'
 import { AggregateModule } from './modules/aggregate/aggregate.module'
 import { LogModule } from './modules/log/log.module'
+import { CountModule } from './modules/count/count.module'
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { LogModule } from './modules/log/log.module'
     SystemModule,
     AggregateModule,
     LogModule,
+    CountModule,
   ],
   controllers: [AppController],
   providers: [

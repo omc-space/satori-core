@@ -18,10 +18,15 @@ import { NidType, NotePasswordQueryDto, NoteQueryDto } from './note.dto'
 import { addYearCondition } from '~/transformers/db-query.transformer'
 import { CannotFindException } from '~/common/exceptions/cant-find.exception'
 import { ApiController } from '~/common/decorators/api-controller.decorator'
+import { CountService } from '../count/count.service'
+import { IpLocation, IpRecord } from '~/common/decorators/ip.decorator'
 
 @ApiController('notes')
 export class NoteController {
-  constructor(private readonly noteService: NoteService) {}
+  constructor(
+    private readonly noteService: NoteService,
+    private readonly countService: CountService,
+  ) {}
 
   @Post('/')
   @Auth()
@@ -87,7 +92,10 @@ export class NoteController {
   }
 
   @Get('/latest')
-  async getLatestOne(@IsMaster() isMaster: boolean) {
+  async getLatestOne(
+    @IsMaster() isMaster: boolean,
+    @IpLocation() { ip }: IpRecord,
+  ) {
     const result = await this.noteService.getLatestOne(
       isMaster ? {} : this.noteService.publicNoteQueryCondition,
       isMaster ? '+location +coordinates' : '-location -coordinates',
@@ -97,7 +105,13 @@ export class NoteController {
     const { latest, next } = result
     latest.text = this.noteService.checkNoteIsSecret(latest) ? '' : latest.text
 
-    return { data: latest, next }
+    return {
+      data: {
+        ...latest,
+        liked: await this.countService.isLiked(latest.id, 'note', ip),
+      },
+      next,
+    }
   }
 
   // C 端入口
@@ -106,7 +120,7 @@ export class NoteController {
     @Param() params: NidType,
     @IsMaster() isMaster: boolean,
     @Query() query: NotePasswordQueryDto,
-    // @IpLocation() { ip }: IpRecord,
+    @IpLocation() { ip }: IpRecord,
   ) {
     const { nid } = params
     const { password, single: isSingle } = query
@@ -134,14 +148,12 @@ export class NoteController {
       throw new ForbiddenException('不要偷看人家的小心思啦~')
     }
 
-    // TODO:点赞统计
-    // const liked = await this.countingService
-    //   .getThisRecordIsLiked(current.id!, ip)
-    //   .catch(() => false)
+    const liked = await this.countService.isLiked(current.id, 'note', ip)
+    this.countService.recordRead(current.id, 'note', ip)
 
     const currentData = {
       ...current,
-      liked: false,
+      liked,
     }
 
     if (isSingle) {
