@@ -104,7 +104,7 @@ export class NoteController {
     if (!result) return null
     const { latest, next } = result
     latest.text = this.noteService.checkNoteIsSecret(latest) ? '' : latest.text
-
+    this.countService.recordRead(latest.id, 'note', ip)
     return {
       data: {
         ...latest,
