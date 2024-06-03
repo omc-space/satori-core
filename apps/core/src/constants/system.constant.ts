@@ -1,3 +1,5 @@
+export const REFLECTOR = 'Reflector'
+
 export const DB_CONNECTION_TOKEN = '__db_connection_token__'
 
 export const RESPONSE_PASSTHROUGH_METADATA = '__responsePassthrough__'

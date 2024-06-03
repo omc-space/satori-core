@@ -10,9 +10,15 @@ import { PostModule } from '~/modules/post/post.module'
 import { AssetService } from './helper.asset.service'
 import { EmailService } from './helper.email.service'
 import { HttpService } from './helper.http.service'
+import { EventManagerService } from './helper.event.service'
 import { isDev } from '~/app.config'
 
-const providers: Provider<any>[] = [AssetService, EmailService, HttpService]
+const providers: Provider<any>[] = [
+  AssetService,
+  EmailService,
+  HttpService,
+  EventManagerService,
+]
 
 @Module({
   imports: [

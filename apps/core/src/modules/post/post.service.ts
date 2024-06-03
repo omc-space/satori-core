@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Post,
   forwardRef,
 } from '@nestjs/common'
 import { PostModel } from './post.model'
@@ -19,6 +20,8 @@ import type { AggregatePaginateModel, Document, Types } from 'mongoose'
 import { CommentModel } from '../comment/comment.model'
 import { CollectionRefTypes } from '~/constants/db.constant'
 import { getImageMetaFromMd } from '~/utils/pic.util'
+import { EventManagerService } from '~/shared/helper/helper.event.service'
+import { BusinessEvents } from '~/constants/business-event.constant'
 
 @Injectable()
 export class PostService {
@@ -30,6 +33,8 @@ export class PostService {
     private readonly categoryService: CategoryService,
     @InjectModel(CommentModel)
     private readonly commentModel: MongooseModel<CommentModel>,
+
+    private readonly EventManger: EventManagerService,
   ) {}
 
   get model() {
@@ -75,6 +80,7 @@ export class PostService {
     //双向关联文章
     await this.relatedEachOther(doc, relatedIds)
 
+    this.EventManger.emit(BusinessEvents.POST_CREATE, post.title)
     return doc
   }
 
@@ -129,6 +135,7 @@ export class PostService {
         : {},
     )
     await oldPost.save()
+    this.EventManger.emit(BusinessEvents.POST_UPDATE, oldPost.title)
     return oldPost.toObject()
   }
 
@@ -142,6 +149,8 @@ export class PostService {
       //TODO: 删除评论
       this.removeRelatedEachOther(deletedPost),
     ])
+
+    this.EventManger.emit(BusinessEvents.POST_DELETE, deletedPost.title)
   }
 
   async isAvailableSlug(slug: string) {

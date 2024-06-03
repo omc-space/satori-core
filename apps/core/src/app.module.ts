@@ -27,6 +27,7 @@ import { SystemModule } from './modules/system/system.module'
 import { AggregateModule } from './modules/aggregate/aggregate.module'
 import { LogModule } from './modules/log/log.module'
 import { CountModule } from './modules/count/count.module'
+import { IdempotenceInterceptor } from './common/interceptors/idempotence.interceptor'
 
 @Module({
   imports: [
@@ -64,6 +65,10 @@ import { CountModule } from './modules/count/count.module'
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: IdempotenceInterceptor,
     },
     {
       provide: APP_GUARD,
