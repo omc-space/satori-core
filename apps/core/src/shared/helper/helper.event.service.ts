@@ -9,4 +9,8 @@ export class EventManagerService {
   emit(eventName: BusinessEvents, data: any) {
     this.logger.log('eventName: ' + eventName + ' ' + 'data:' + data)
   }
+
+  get broadcast() {
+    return this.emit
+  }
 }

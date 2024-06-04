@@ -28,6 +28,7 @@ import { AggregateModule } from './modules/aggregate/aggregate.module'
 import { LogModule } from './modules/log/log.module'
 import { CountModule } from './modules/count/count.module'
 import { IdempotenceInterceptor } from './common/interceptors/idempotence.interceptor'
+import { PageModule } from './modules/page/page.module'
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { IdempotenceInterceptor } from './common/interceptors/idempotence.interc
     AggregateModule,
     LogModule,
     CountModule,
+    PageModule,
   ],
   controllers: [AppController],
   providers: [
