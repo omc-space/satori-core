@@ -45,6 +45,8 @@ export const CROSS_DOMAIN = {
     '127.0.0.1',
     '*.dev',
     '*.vercel.app',
+    'dvaren.cn',
+    '*.dvaren.cn',
   ],
 
   // allowedReferer: 'innei.ren',
